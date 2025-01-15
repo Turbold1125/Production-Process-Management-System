@@ -18,7 +18,7 @@ export const useInventory = () => {
 
     const fetchInventoryData = useCallback(async () => {
         try {
-            const response = await axios.get(`${API_BASE_URL}/inventories/all`);
+            const response = await axios.get(`${API_BASE_URL}/inventory/all`);
             setInventoryData(response.data);
         } catch (error) {
             handleError(error);
@@ -27,7 +27,7 @@ export const useInventory = () => {
 
     const fetchInventoryLogs = useCallback(async () => {
         try {
-            const response = await axios.get(`${API_BASE_URL}/inventories/logs`);
+            const response = await axios.get(`${API_BASE_URL}/inventory/logs`);
             setLogData(response.data);
         } catch (error) {
             handleError(error);
@@ -36,7 +36,7 @@ export const useInventory = () => {
 
     const createInventory = async (data) => {
         try {
-            const response = await axios.post(`${API_BASE_URL}/inventories/create`, data);
+            const response = await axios.post(`${API_BASE_URL}/inventory/create`, data);
             // setInventoryData((prevInventory) => [...prevInventory, response.data]);
             await fetchInventoryData();
             await fetchInventoryLogs();
@@ -48,7 +48,7 @@ export const useInventory = () => {
 
     const searchInventory = async (customerName, fiberMaterial) => {
         try {
-            const response = await axios.get(`${API_BASE_URL}/inventories/search`, {
+            const response = await axios.get(`${API_BASE_URL}/inventory/search`, {
                 params: { customerName, fiberMaterial },
             });
             setInventoryData(response.data);

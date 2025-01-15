@@ -1,0 +1,189 @@
+@startuml
+
+!define RECTANGLE class
+!define INTERFACE interface
+!define ENUM enum
+
+skinparam package {
+    BackgroundColor<<Presentation Layer>> LightPink
+    BackgroundColor<<Business Logic Layer>> LightOrange
+    BackgroundColor<<Data Access Layer>> LightGreen
+    BackgroundColor<<Model Layer>> LightYellow
+    BackgroundColor<<Constant Layer>> LightBlue
+    BackgroundColor<<Integration Layer>> LightGray
+}
+
+package "Presentation Layer" <<Presentation Layer>> {
+    RECTANGLE InventoryController {
+        +String getAllInventories()
+        +String getInventoryById(Integer id)
+        +String createInventory(Inventories item)
+        +String updateInventory(Integer id, Inventories item)
+        +String deleteInventory(Integer id)
+    }
+
+    RECTANGLE OrderController {
+        +String createOrder(Order order)
+        +String getOrderById(Integer id)
+        +String getOrdersByCustomerName(String customerName)
+        +String updateOrder(Integer id, Order order)
+        +String deleteOrder(Integer id)
+    }
+
+    RECTANGLE CustomerController {
+        +String createCustomer(Customer customer)
+        +String getCustomerById(Integer id)
+        +String getCustomersByName(String name)
+        +String updateCustomer(Integer id, Customer customer)
+        +String deleteCustomer(Integer id)
+    }
+}
+
+package "Business Logic Layer" <<Business Logic Layer>> {
+    RECTANGLE InventoryService {
+        -InventoriesRepository inventoriesRepository
+        -InventoryLogRepository inventoryLogRepository
+        +List<Inventories> getAllInventories()
+        +Inventories getInventoryById(Integer id)
+        +Inventories createInventory(Inventories item)
+        +Inventories updateInventory(Integer id, Inventories item)
+        +void deleteInventory(Integer id)
+        -void logInventoryAction(Inventories inventory, String action)
+    }
+
+    RECTANGLE OrderService {
+        -OrderRepository orderRepository
+        +Order createOrder(Order order)
+        +Order getOrderById(Integer id)
+        +List<Order> getOrdersByCustomerName(String customerName)
+        +Order updateOrder(Integer id, Order order)
+        +void deleteOrder(Integer id)
+    }
+
+    RECTANGLE CustomerService {
+        -CustomerRepository customerRepository
+        +Customer createCustomer(Customer customer)
+        +Customer getCustomerById(Integer id)
+        +List<Customer> getCustomersByName(String name)
+        +Customer updateCustomer(Integer id, Customer customer)
+        +void deleteCustomer(Integer id)
+    }
+}
+
+package "Data Access Layer" <<Data Access Layer>> {
+    INTERFACE InventoriesRepository {
+        +List<Inventories> findByfiberMaterial(String material)
+        +List<Inventories> searchInventory(String customerName, String fiberMaterial)
+        +List<Inventories> findByCustomerNameContaining(String customerName)
+        +List<Inventories> findByFiberMaterialContaining(String fiberMaterial)
+        +List<Inventories> findByCustomerNameContainingAndFiberMaterialContaining(String customerName, String fiberMaterial)
+        +Inventories save(Inventories item)
+        +Inventories findById(Integer id)
+        +void deleteById(Integer id)
+    }
+
+    INTERFACE InventoryLogRepository {
+        +InventoryLog save(InventoryLog log)
+        +List<InventoryLog> findAll()
+    }
+
+    INTERFACE OrderRepository {
+        +Order save(Order order)
+        +Order findById(Integer id)
+        +List<Order> findByCustomerName(String customerName)
+        +void deleteById(Integer id)
+    }
+
+    INTERFACE CustomerRepository {
+        +Customer save(Customer customer)
+        +Customer findById(Integer id)
+        +List<Customer> findByName(String name)
+        +void deleteById(Integer id)
+    }
+}
+
+package "Model Layer" <<Model Layer>> {
+    RECTANGLE Inventories {
+        +Integer id
+        +String fiberMaterial
+        +String customerName
+        +String fiberColor
+        +String fiberType
+        +double roughWeight
+        +Integer baleNum
+        +Double baleWeight
+        +Integer bobbinNum
+        +Double bobbinWeight
+        +double conWeight
+        +LocalDateTime dateTime
+    }
+
+    RECTANGLE Material {
+        +Integer id
+        +String name
+        +String name_en
+    }
+
+    RECTANGLE InventoryLog {
+        +Integer id
+        +Integer inventoryId
+        +String action
+        +String customerName
+        +String fiberMaterial
+        +String fiberColor
+        +String fiberType
+        +double roughWeight
+        +Double baleWeight
+        +double conWeight
+        +LocalDateTime timestamp
+    }
+
+    RECTANGLE Order {
+        +Integer id
+        +String customerName
+        +String fiberColor
+        +String fiberType
+        +double weight
+        +Status status
+        +LocalDateTime orderDate
+        +List<FactoryProcess> factoryProcesses
+    }
+
+    RECTANGLE FactoryProcess {
+        +Integer id
+        +String name
+        +String name_en
+        +String description
+        +String outputs
+        +String outputs_en
+    }
+
+    RECTANGLE Customer {
+        +Integer id
+        +String name
+        +String email
+        +String phoneNumber
+        +String address
+    }
+}
+
+package "Constant Layer" <<Constant Layer>> {
+    ENUM MatEnum {
+        FIBER
+        FIBERBLENDED
+        ROVEN
+        SINGLE_YARN
+        WINDED_YARN
+        DOUBLED_YARN
+        TWISTED_YARN
+    }
+
+    ENUM Status {
+        PENDING
+        IN_PROGRESS
+        COMPLETED
+        CANCELLED
+    }
+}
+
+@enduml

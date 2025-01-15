@@ -1,0 +1,167 @@
+'@startuml
+'title Detailed Login Sequence Diagram
+'
+'actor User
+'
+'participant "LoginPage" as LP
+'participant "AuthController" as AC
+'participant "AuthService" as AS
+'participant "UserRepository" as UR
+'participant "PasswordEncoder" as PE
+'participant "JwtService" as JS
+'participant "AuthenticationManager" as AM
+'
+'User -> LP: Open Login Page
+'activate LP
+'LP -> LP: Enter email and password
+'LP -> AC: POST /api/auth/login
+'activate AC
+'AC -> AS: login(request)
+'activate AS
+'
+'AS -> UR: findByEmail(request.email)
+'activate UR
+'UR --> AS: User
+'deactivate UR
+'
+'alt User not found
+'    AS -> AS: throw ServiceException(ErrorResponse.NO_CUSTOMER)
+'    AS --> AC: throw ServiceException(ErrorResponse.NO_CUSTOMER)
+'    AC --> LP: Display Error (NO_CUSTOMER)
+'    deactivate AS
+'    deactivate AC
+'    deactivate LP
+'else User found
+'    AS -> PE: matches(request.password, user.password)
+'    activate PE
+'    PE --> AS: boolean
+'    deactivate PE
+'
+'    alt Password does not match
+'        AS -> AS: throw ServiceException(ErrorResponse.AUTH)
+'        AS --> AC: throw ServiceException(ErrorResponse.AUTH)
+'        AC --> LP: Display Error (AUTH)
+'        deactivate AS
+'        deactivate AC
+'        deactivate LP
+'    else Password matches
+'        AS -> AM: authenticate(UsernamePasswordAuthenticationToken(request.email, request.password))
+'        activate AM
+'        AM --> AS: Authentication
+'        deactivate AM
+'
+'        AS -> JS: generateToken(user)
+'        activate JS
+'        JS --> AS: String (jwtToken)
+'        deactivate JS
+'
+'        AS --> AC: AuthResponse(user, jwtToken)
+'        deactivate AS
+'        AC --> LP: AuthResponse(user, jwtToken)
+'        deactivate AC
+'        LP -> LP: Store jwtToken in localStorage
+'        LP --> User: Navigate to Home Page
+'        deactivate LP
+'    end
+'end
+'
+'@enduml
+
+
+@startuml
+title Successful Login Sequence Diagram
+
+actor User
+
+participant "LoginPage" as LP
+participant "AuthController" as AC
+participant "AuthService" as AS
+participant "UserRepository" as UR
+participant "PasswordEncoder" as PE
+participant "JwtService" as JS
+participant "AuthenticationManager" as AM
+
+User -> LP: Open Login Page
+activate LP
+LP -> LP: Enter email and password
+LP -> AC: POST /api/auth/login
+activate AC
+AC -> AS: login(request)
+activate AS
+
+AS -> UR: findByEmail(request.email)
+activate UR
+UR --> AS: User
+deactivate UR
+
+AS -> PE: matches(request.password, user.password)
+activate PE
+PE --> AS: true
+deactivate PE
+
+AS -> AM: authenticate(UsernamePasswordAuthenticationToken(request.email, request.password))
+activate AM
+AM --> AS: Authentication
+deactivate AM
+
+AS -> JS: generateToken(user)
+activate JS
+JS --> AS: String (jwtToken)
+deactivate JS
+
+AS --> AC: AuthResponse(user, jwtToken)
+deactivate AS
+AC --> LP: AuthResponse(user, jwtToken)
+deactivate AC
+LP -> LP: Store jwtToken in localStorage
+LP --> User: Navigate to Home Page
+deactivate LP
+
+User -> LP: Open Login Page
+activate LP
+LP -> LP: Enter email and password
+LP -> AC: POST /api/auth/login
+activate AC
+AC -> AS: login(request)
+activate AS
+
+AS -> UR: findByEmail(request.email)
+activate UR
+UR --> AS: null
+deactivate UR
+
+AS -> AS: throw ServiceException(ErrorResponse.NO_CUSTOMER)
+AS --> AC: throw ServiceException(ErrorResponse.NO_CUSTOMER)
+deactivate AS
+AC --> LP: Display Error (NO_CUSTOMER)
+deactivate AC
+LP --> User: Show error message
+deactivate LP
+
+User -> LP: Open Login Page
+activate LP
+LP -> LP: Enter email and password
+LP -> AC: POST /api/auth/login
+activate AC
+AC -> AS: login(request)
+activate AS
+
+AS -> UR: findByEmail(request.email)
+activate UR
+UR --> AS: User
+deactivate UR
+
+AS -> PE: matches(request.password, user.password)
+activate PE
+PE --> AS: false
+deactivate PE
+
+AS -> AS: throw ServiceException(ErrorResponse.AUTH)
+AS --> AC: throw ServiceException(ErrorResponse.AUTH)
+deactivate AS
+AC --> LP: Display Error (AUTH)
+deactivate AC
+LP --> User: Show error message
+deactivate LP
+
+@enduml

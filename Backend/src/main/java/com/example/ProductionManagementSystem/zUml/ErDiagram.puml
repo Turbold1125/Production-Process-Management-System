@@ -1,0 +1,205 @@
+@startuml
+skinparam class {
+    BackgroundColor LightSkyBlue
+    BorderColor Black
+}
+
+' Entities
+class Customer {
+    +Integer id
+    +String name
+    +String email
+    +String mobile
+    +String address
+    +String phone
+    +String fax
+}
+
+class FiberType {
+    +Integer id
+    +String name
+}
+
+class FiberColor {
+    +Integer id
+    +String name
+}
+
+class FactoryProcess {
+    +Integer id
+    +String name_en
+    +String name_mn
+    +String abbre
+}
+
+class Order {
+    +Integer id
+    +Integer customer_id
+    +Integer color_id
+    +Integer fiber_type_id
+    +Integer worker_id
+    +LocalDateTime orderDate
+    +Float weight
+    +String status
+}
+
+class Process2Order {
+    +Integer order_id
+    +Integer process_id
+}
+
+class Worker {
+    +Integer id
+    +String email
+    +String username
+    +String password
+    +String role
+}
+
+class Inventory {
+    +Integer id
+    +LocalDateTime dateTime
+    +Integer p_name
+    +String customer_name
+    +Integer fiber_material
+    +Integer fiber_color_id
+    +Integer fiber_type_id
+    +Float rough_weight
+    +Integer bale_num
+    +Float bale_weight
+    +Integer bobbin_num
+    +Float bobbin_weight
+    +Float con_weight
+}
+
+class InventoryLog {
+    +Integer id
+    +String customer_name
+    +Integer p_name
+    +Integer inventory_id
+    +LocalDateTime dateTime
+    +Integer fiber_material_id
+    +Integer fiber_type_id
+    +Integer fiber_color_id
+    +Float rough_weight
+    +Integer bale_num
+    +Float bale_weight
+    +Integer bobbin_num
+    +Float bobbin_weight
+    +Float con_weight
+    +String action
+}
+
+class Process {
+    +Integer id
+    +Integer order_id
+    +String process_name
+    +String customer_name
+    +Integer worker_id
+    +LocalDateTime start_date
+    +LocalDateTime end_date
+    +Float input_weight
+    +Float output_weight
+    +String input_material
+    +String output_material
+    +String status
+}
+
+class ProcessLog {
+    +Integer id
+    +Integer order_id
+    +String process_name
+    +String customer_name
+    +Integer worker_id
+    +String status
+    +LocalDateTime start_date
+    +LocalDateTime end_date
+    +Float input_weight
+    +Float output_weight
+    +String input_material
+    +String output_material
+}
+
+class Status {
+    +Integer id
+    +String name
+}
+
+class FiberMaterial {
+    +Integer id
+    +String name
+    +String name_en
+}
+
+class InventoryItem {
+    +Integer id
+    +Inventory inventory
+    +String fiberMaterial
+    +String fiberColor
+    +String fiberType
+    +double roughWeight
+    +Integer baleNum
+    +Double baleWeight
+    +Integer bobbinNum
+    +Double bobbinWeight
+    +double conWeight
+    +LocalDateTime createdAt
+}
+
+class Inventories {
+    +Integer id
+    +String fiberMaterial
+    +String customerName
+    +String fiberColor
+    +String fiberType
+    +double roughWeight
+    +Integer baleNum
+    +Double baleWeight
+    +Integer bobbinNum
+    +Double bobbinWeight
+    +double conWeight
+    +LocalDateTime dateTime
+}
+
+class OrderResponse {
+    +Integer id
+    +String customerName
+    +String fiberColor
+    +String fiberType
+    +LocalDateTime orderDate
+    +Float weight
+    +String status
+}
+
+class ErrorResponse {
+    +String errorCode
+    +String errorMessage
+}
+
+' Relationships
+Order "1" -- "0..*" Process2Order : contains
+Order "1" -- "0..*" Process : contains
+Order "1" -- "0..*" ProcessLog : logs
+Order "1" -- "0..*" FactoryProcess : contains
+Order "1" -- "0..*" Status : has
+Order "1" -- "0..*" Customer : belongs to
+Order "1" -- "0..*" FiberColor : has
+Order "1" -- "0..*" FiberType : has
+Order "1" -- "0..*" Worker : assigned to
+
+Process "1" -- "0..*" ProcessLog : logs
+Process "1" -- "0..*" Inventory : produces
+Process "1" -- "0..*" Status : has
+Process "1" -- "0..*" Customer : belongs to
+Process "1" -- "0..*" Worker : assigned to
+Process "1" -- "0..*" FiberMaterial : uses
+
+Inventory "1" -- "0..*" InventoryLog : logs
+Inventory "1" -- "0..*" FiberMaterial : contains
+Inventory "1" -- "0..*" FiberColor : contains
+Inventory "1" -- "0..*" FiberType : contains
+Inventory "1" -- "0..*" Customer : belongs to
+
+Inventory "1" -- "0..*" InventoryItem : contains
+
+@enduml

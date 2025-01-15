@@ -1,0 +1,133 @@
+@startuml
+title Inventory and Inventory Log Sequence Diagram
+
+actor User
+
+participant "InventoryPage" as IP
+participant "InventoriesController" as IC
+participant "InventoriesService" as IS
+participant "InventoriesRepository" as IR
+participant "InventoryLogService" as ILS
+participant "InventoryLogRepository" as ILR
+
+User -> IP: Open Inventory Page
+activate IP
+IP -> IC: GET /api/inventories/all
+activate IC
+IC -> IS: getAllInventories()
+activate IS
+
+IS -> IR: findAll()
+activate IR
+IR --> IS: List<Inventories>
+deactivate IR
+
+IS --> IC: List<Inventories>
+deactivate IS
+IC --> IP: List<Inventories>
+deactivate IC
+IP --> User: Display Inventory List
+deactivate IP
+
+User -> IP: Create Inventory
+activate IP
+IP -> IC: POST /api/inventories/create
+activate IC
+IC -> IS: createInventory(inventoryData)
+activate IS
+
+IS -> IR: save(inventoryData)
+activate IR
+IR --> IS: Inventories
+deactivate IR
+
+IS -> ILS: logInventoryAction(inventoryData, "CREATE")
+activate ILS
+ILS -> ILR: save(log)
+activate ILR
+ILR --> ILS: InventoryLog
+deactivate ILR
+deactivate ILS
+
+IS --> IC: Inventories
+deactivate IS
+IC --> IP: Inventories
+deactivate IC
+IP --> User: Display Created Inventory
+deactivate IP
+
+User -> IP: Search Inventory
+activate IP
+IP -> IC: GET /api/inventories/search?customerName={customerName}&fiberMaterial={fiberMaterial}
+activate IC
+IC -> IS: searchItems(customerName, fiberMaterial)
+activate IS
+
+alt Search by Customer Name
+    IS -> IR: findByCustomerNameContaining(customerName)
+    activate IR
+    IR --> IS: List<Inventories>
+    deactivate IR
+else Search by Fiber Material
+    IS -> IR: findByFiberMaterialContaining(fiberMaterial)
+    activate IR
+    IR --> IS: List<Inventories>
+    deactivate IR
+else Search by Both
+    IS -> IR: findByCustomerNameContainingAndFiberMaterialContaining(customerName, fiberMaterial)
+    activate IR
+    IR --> IS: List<Inventories>
+    deactivate IR
+else Search All
+    IS -> IR: findAll()
+    activate IR
+    IR --> IS: List<Inventories>
+    deactivate IR
+end
+
+IS --> IC: List<Inventories>
+deactivate IS
+IC --> IP: List<Inventories>
+deactivate IC
+IP --> User: Display Search Results
+deactivate IP
+
+User -> IP: Filter Inventory
+activate IP
+IP -> IC: GET /api/inventories/filter?customerName={customerName}&processType={processType}
+activate IC
+IC -> IS: getFilteredInventory(customerName, processType)
+activate IS
+
+IS -> IR: findByCustomerNameAndFiberMaterialIn(customerName, processType)
+activate IR
+IR --> IS: List<Inventories>
+deactivate IR
+
+IS --> IC: List<Inventories>
+deactivate IS
+IC --> IP: List<Inventories>
+deactivate IC
+IP --> User: Display Filtered Results
+deactivate IP
+
+User -> IP: View Inventory Logs
+activate IP
+IP -> IC: GET /api/inventories/logs
+activate IC
+IC -> IS: getInventoryLogs()
+activate IS
+
+IS -> ILR: findAllByOrderByTimestampDesc()
+activate ILR
+ILR --> IS: List<InventoryLog>
+deactivate ILR
+
+IS --> IC: List<InventoryLog>
+deactivate IS
+IC --> IP: List<InventoryLog>
+deactivate IC
+IP --> User: Display Inventory Logs
+deactivate IP
+
+@enduml

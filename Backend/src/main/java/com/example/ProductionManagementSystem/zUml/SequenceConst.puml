@@ -1,0 +1,88 @@
+@startuml
+title User Management Sequence Diagram
+
+actor User
+
+participant "UserPage" as UserPage
+participant "UserController" as UserController
+participant "UserService" as UserService
+participant "UserRepository" as UserRepository
+participant "PasswordEncoder" as PasswordEncoder
+
+' Create User
+User -> UserPage: Add New User
+activate UserPage
+UserPage -> UserController: POST /api/users
+activate UserController
+UserController -> UserService: createUser(user)
+activate UserService
+UserService -> PasswordEncoder: encode(user.password)
+activate PasswordEncoder
+PasswordEncoder --> UserService: encodedPassword
+deactivate PasswordEncoder
+UserService -> UserRepository: save(user)
+activate UserRepository
+UserRepository --> UserService: User
+deactivate UserRepository
+UserService --> UserController: User
+deactivate UserService
+UserController --> UserPage: User
+deactivate UserController
+UserPage --> User: Display New User
+deactivate UserPage
+
+' Update User
+User -> UserPage: Update User
+activate UserPage
+UserPage -> UserController: PUT /api/users/{id}
+activate UserController
+UserController -> UserService: updateUser(id, user)
+activate UserService
+UserService -> UserRepository: save(user)
+activate UserRepository
+UserRepository --> UserService: User
+deactivate UserRepository
+UserService --> UserController: User
+deactivate UserService
+UserController --> UserPage: User
+deactivate UserController
+UserPage --> User: Display Updated User
+deactivate UserPage
+
+' Delete User
+User -> UserPage: Delete User
+activate UserPage
+UserPage -> UserController: DELETE /api/users/{id}
+activate UserController
+UserController -> UserService: deleteUser(id)
+activate UserService
+UserService -> UserRepository: deleteById(id)
+activate UserRepository
+UserRepository --> UserService: void
+deactivate UserRepository
+UserService --> UserController: void
+deactivate UserService
+UserController --> UserPage: void
+deactivate UserController
+UserPage --> User: Display User Deleted
+deactivate UserPage
+
+' Get User
+User -> UserPage: Get User
+activate UserPage
+UserPage -> UserController: GET /api/users/{id}
+activate UserController
+UserController -> UserService: getUser(id)
+activate UserService
+UserService -> UserRepository: findById(id)
+activate UserRepository
+UserRepository --> UserService: User
+deactivate UserRepository
+UserService --> UserController: User
+deactivate UserService
+UserController --> UserPage: User
+deactivate UserController
+UserPage --> User: Display User
+deactivate UserPage
+
+@enduml

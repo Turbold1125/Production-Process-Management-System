@@ -1,0 +1,106 @@
+@startuml
+title Entity Diagram for Inventory Management System
+
+entity "Customer" {
+    +Integer id
+    +String name
+    +String email
+    +String phoneNumber
+    +String address
+}
+
+entity "Order" {
+    +Integer id
+    +String customerName
+    +String fiberColor
+    +String fiberType
+    +double weight
+    +Status status
+    +LocalDateTime orderDate
+}
+
+entity "Inventories" {
+    +Integer id
+    +String fiberMaterial
+    +String customerName
+    +String fiberColor
+    +String fiberType
+    +double roughWeight
+    +Integer baleNum
+    +Double baleWeight
+    +Integer bobbinNum
+    +Double bobbinWeight
+    +double conWeight
+    +LocalDateTime dateTime
+}
+
+entity "Process" {
+    +Integer id
+    +Integer orderId
+    +String processName
+    +String customerName
+    +String status
+    +LocalDateTime dateTime
+    +String inputMaterial
+    +Double inputMaterialWeight
+    +String outputMaterial
+    +Double outputMaterialWeight
+}
+
+entity "ProcessLog" {
+    +Integer id
+    +Integer orderId
+    +String processName
+    +Double inputMaterialWeight
+    +Double outputMaterialWeight
+    +LocalDateTime processStartTime
+    +LocalDateTime processEndTime
+}
+
+entity "FactoryProcess" {
+    +Integer id
+    +String name
+    +String name_en
+    +String description
+    +String outputs
+    +String outputs_en
+}
+
+entity "FiberMaterial" {
+    +Integer id
+    +String name
+    +String name_en
+}
+
+entity "FiberColor" {
+    +Integer id
+    +String name
+    +String name_en
+}
+
+entity "FiberType" {
+    +Integer id
+    +String name
+    +String name_en
+}
+
+enum "Status" {
+    PENDING
+    IN_PROGRESS
+    COMPLETED
+    CANCELLED
+}
+
+' Relationships
+Customer "1" -- "0..*" Order : places
+Order "1" -- "0..*" Process : contains
+Order "1" -- "0..*" FactoryProcess : contains
+Order "1" -- "0..*" ProcessLog : logs
+Process "1" -- "0..*" ProcessLog : logs
+Inventories "1" -- "0..*" Process : provides input
+Process "1" -- "0..*" Inventories : produces output
+Inventories "1" -- "1" FiberMaterial : uses
+Inventories "1" -- "1" FiberColor : uses
+Inventories "1" -- "1" FiberType : uses
+
+@enduml

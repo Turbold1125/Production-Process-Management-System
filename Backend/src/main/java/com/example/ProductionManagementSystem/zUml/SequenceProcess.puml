@@ -1,0 +1,137 @@
+@startuml
+
+actor User as U
+participant "React App (OrderDetailsLayout.jsx)" as FE
+participant "axios" as AX
+participant "ProcessController" as PC
+participant "ProcessService" as PS
+participant "UserService" as US
+participant "ProcessRepository" as PR
+participant "ProcessOutputService" as POS
+participant "InventoriesService" as IS
+participant "ProcessOutputRepository" as POR
+participant "OrderService" as OS
+
+' === FRONT-END FLOW ===
+U -> FE: Click on "Процесс дуусгах" button
+activate FE
+FE -> FE: setEndProcessModalVisible(true)
+note right
+ User sees an "EndProcessModal" pop-up.
+ They input output material, output weight,
+ select output color and waste details.
+end note
+
+U -> FE: Submit the EndProcessModal form (click OK)
+FE -> FE: submitEndProcess() triggered
+FE -> AX: POST /api/processes/end with payload (processId, userId, outputMaterial, outputWeight, outputColor, wastes)
+activate AX
+
+' === BACK-END FLOW (CONTROLLER) ===
+AX -> PC: endProcess(request)
+activate PC
+
+' 1. Validate and find the process
+PC -> PS: endProcess(request)
+activate PS
+PS -> PR: findById(processId)
+activate PR
+PR --> PS: Optional<Process> (Process found)
+deactivate PR
+
+' 2. Get user details
+PS -> US: getUserById(userId)
+activate US
+US --> PS: User entity
+deactivate US
+
+' 3. Validate outputWeight > 0
+PS -> PS: Check request outputWeight > 0
+
+' 4. Update process fields (status=COMPLETED, outputMaterial, outputWeight, etc.)
+PS -> PR: save(updated process)
+activate PR
+PR --> PS: Process (saved)
+deactivate PR
+
+' 5. Log process action as COMPLETED
+PS -> PS: logProcessAction(process, "COMPLETED", userId, username)
+note right
+This updates or creates a ProcessLog entry
+with output materials, waste details, etc.
+end note
+
+' 6. Create processed inventory for the output material
+PS -> IS: createProcessedInventory(outputMaterial, outputColor, outputWeight, customerName)
+activate IS
+IS --> PS: Inventories (outputInventory)
+deactivate IS
+
+' 7. Log primary output
+PS -> POS: logPrimaryOutput(process.id, process.orderId, outputInventory, PRIMARY)
+activate POS
+POS -> POR: save(ProcessOutput)
+activate POR
+POR --> POS: ProcessOutput saved
+deactivate POR
+POS --> PS: void
+deactivate POS
+
+' 8. Handle wastes
+loop for each WasteRequest in request.wastes
+    alt wasteRequest.weight > 0
+        PS -> IS: createWasteInventory(material, weight, customerName, outputColor)
+        activate IS
+        IS --> PS: Inventories (wasteInventory)
+        deactivate IS
+
+        PS -> POS: logWasteOutput(process.id, process.orderId, wasteInventory, wasteRequest)
+        activate POS
+        POS -> POR: save(ProcessOutput WASTE)
+        activate POR
+        POR --> POS: ProcessOutput saved
+        deactivate POR
+        POS --> PS: void
+        deactivate POS
+    else
+        PS -> PS: Skip logging (weight <= 0)
+    end
+end
+
+' 9. Check if all processes completed for this order
+PS -> POS: areAllProcessesCompleted(orderId)
+activate POS
+POS -> PR: findByOrderId(orderId)
+activate PR
+PR --> POS: List<Process>
+deactivate PR
+POS --> PS: boolean allCompleted
+deactivate POS
+
+' 10. If all completed, update order status
+alt allCompleted == true
+    PS -> OS: updateOrderStatus(orderId, COMPLETED)
+    activate OS
+    OS --> PS: void
+    deactivate OS
+else
+    PS -> PS: Do nothing
+end
+
+PS --> PC: Inventories (outputInventory)
+deactivate PS
+
+PC --> AX: 200 OK (outputInventory JSON)
+deactivate PC
+
+' === FRONT-END FLOW (RESPONSE HANDLING) ===
+AX --> FE: response (successful completion)
+deactivate AX
+
+FE -> FE: message.success("Процесс амжилттай дууслаа")
+FE -> FE: Update UI (mark process as COMPLETED, fetch logs)
+deactivate FE
+
+U -> U: Sees updated UI and process status on the page
+
+@enduml

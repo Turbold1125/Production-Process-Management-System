@@ -1,0 +1,55 @@
+@startuml SequenceDiagram
+
+actor User
+participant "Controller" as ProcessController
+participant "Service" as ProcessService
+participant "Service" as InventoriesService
+participant "Service" as ProcessOutputService
+participant "Repository" as ProcessRepository
+participant "Repository" as InventoriesRepository
+participant "Repository" as ProcessLogRepository
+participant "Repository" as ProcessOutputRepository
+
+== Start Process ==
+User -> ProcessController: startProcess(request)
+ProcessController -> ProcessService: startProcess(request)
+ProcessService -> InventoriesService: validateAndDeductInventory(inventoryId, weight, customerName, processName)
+InventoriesService -> InventoriesRepository: findById(inventoryId)
+InventoriesRepository --> InventoriesService: inventory
+InventoriesService -> InventoriesRepository: save(updatedInventory)
+InventoriesService --> ProcessService: inventory
+
+ProcessService -> ProcessOutputService: logProcessInput(processId, orderId, fiberRequest, inventory, customerName)
+ProcessOutputService -> ProcessRepository: save(ProcessInput)
+
+ProcessService -> ProcessRepository: save(updated Process)
+ProcessService -> ProcessLogRepository: save(ProcessLog)
+ProcessService --> ProcessController: updated Process
+
+== End Process ==
+User -> ProcessController: endProcess(request)
+ProcessController -> ProcessService: endProcess(request)
+ProcessService -> ProcessRepository: findById(processId)
+ProcessRepository --> ProcessService: Process
+
+ProcessService -> InventoriesService: createProcessedInventory(outputMaterial, outputColor, outputWeight, customerName)
+InventoriesService -> InventoriesRepository: save(new Inventory)
+InventoriesService --> ProcessService: new Inventory
+
+ProcessService -> ProcessOutputService: logPrimaryOutput(processId, orderId, new Inventory, OutputType.PRIMARY)
+ProcessOutputService -> ProcessOutputRepository: save(ProcessOutput)
+
+loop Log Waste
+ProcessService -> InventoriesService: createWasteInventory(material, weight, customerName, outputColor)
+InventoriesService -> InventoriesRepository: save(new Waste Inventory)
+InventoriesService --> ProcessService: Waste Inventory
+
+ProcessService -> ProcessOutputService: logWasteOutput(processId, orderId, wasteInventory, wasteRequest)
+ProcessOutputService -> ProcessOutputRepository: save(WasteOutput)
+end
+
+ProcessService -> ProcessRepository: save(Completed Process)
+ProcessService -> ProcessLogRepository: save(ProcessLog)
+ProcessService --> ProcessController: outputInventory
+
+@enduml

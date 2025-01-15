@@ -1,0 +1,168 @@
+@startuml
+
+actor User
+
+participant "ProcessPage" as ProcessPage
+participant "ProcessController" as ProcessController
+participant "ProcessService" as ProcessService
+participant "ProcessRepository" as ProcessRepository
+participant "ProcessLogRepository" as ProcessLogRepository
+participant "ProcessOutputService" as ProcessOutputService
+participant "ProcessInputRepository" as ProcessInputRepository
+participant "ProcessOutputRepository" as ProcessOutputRepository
+participant "InventoriesService" as InventoriesService
+participant "OrderService" as OrderService
+participant "FactoryProcessRepository" as FactoryProcessRepository
+participant "InventoriesRepository" as InventoriesRepository
+
+== Get Required Materials ==
+
+User -> ProcessPage: Request Required Materials
+activate ProcessPage
+ProcessPage -> ProcessController: GET /api/processes/required-materials
+activate ProcessController
+ProcessController -> ProcessService: getRequiredMaterialsForProcess(processName, customerName)
+activate ProcessService
+
+ProcessService -> FactoryProcessRepository: findByName(processName)
+activate FactoryProcessRepository
+FactoryProcessRepository --> ProcessService: FactoryProcess Details
+deactivate FactoryProcessRepository
+
+ProcessService -> InventoriesRepository: findByCustomerNameAndFiberMaterialIn(customerName, requiredMaterials)
+activate InventoriesRepository
+InventoriesRepository --> ProcessService: List<Inventory>
+deactivate InventoriesRepository
+
+ProcessService --> ProcessController: Required Materials List
+deactivate ProcessService
+ProcessController --> ProcessPage: Required Materials List
+deactivate ProcessController
+ProcessPage --> User: Display Required Materials
+deactivate ProcessPage
+
+== Start Process ==
+
+User -> ProcessPage: Start Process
+activate ProcessPage
+ProcessPage -> ProcessController: POST /api/processes/start
+activate ProcessController
+ProcessController -> ProcessService: startProcess(request)
+activate ProcessService
+ProcessService -> ProcessRepository: findByOrderIdAndProcessName(orderId, processName)
+activate ProcessRepository
+ProcessRepository --> ProcessService: Process Found
+deactivate ProcessRepository
+
+ProcessService -> InventoriesService: validateAndDeductInventory(fiberId, weight, customerName, processName)
+activate InventoriesService
+InventoriesService --> ProcessService: Inventory Validated and Deducted
+deactivate InventoriesService
+
+ProcessService -> ProcessOutputService: logProcessInput(process, fiber, inventory)
+activate ProcessOutputService
+ProcessOutputService -> ProcessInputRepository: save(processInput)
+activate ProcessInputRepository
+ProcessInputRepository --> ProcessOutputService: Input Saved
+deactivate ProcessInputRepository
+ProcessOutputService --> ProcessService: Input Logged
+deactivate ProcessOutputService
+
+ProcessService -> ProcessRepository: save(process with IN_PROGRESS status)
+activate ProcessRepository
+ProcessRepository --> ProcessService: Process Updated
+deactivate ProcessRepository
+
+ProcessService -> ProcessLogRepository: save(startProcessLog)
+activate ProcessLogRepository
+ProcessLogRepository --> ProcessService: Log Saved
+deactivate ProcessLogRepository
+
+ProcessService -> OrderService: updateOrderStatus(orderId, IN_PROGRESS)
+activate OrderService
+OrderService --> ProcessService: Order Status Updated
+deactivate OrderService
+
+ProcessService --> ProcessController: Process Started
+deactivate ProcessService
+ProcessController --> ProcessPage: Process Response
+deactivate ProcessController
+ProcessPage --> User: Display Started Process
+deactivate ProcessPage
+
+== End Process ==
+
+User -> ProcessPage: End Process
+activate ProcessPage
+ProcessPage -> ProcessController: POST /api/processes/end
+activate ProcessController
+ProcessController -> ProcessService: endProcess(request)
+activate ProcessService
+
+ProcessService -> ProcessRepository: findById(processId)
+activate ProcessRepository
+ProcessRepository --> ProcessService: Process Found
+deactivate ProcessRepository
+
+ProcessService -> InventoriesService: createProcessedInventory(outputMaterial, outputColor, outputWeight, customerName)
+activate InventoriesService
+InventoriesService --> ProcessService: Output Inventory Created
+deactivate InventoriesService
+
+ProcessService -> ProcessOutputService: logPrimaryOutput(process, inventory, PRIMARY)
+activate ProcessOutputService
+ProcessOutputService -> ProcessOutputRepository: save(processOutput)
+activate ProcessOutputRepository
+ProcessOutputRepository --> ProcessOutputService: Output Saved
+deactivate ProcessOutputRepository
+ProcessOutputService --> ProcessService: Output Logged
+deactivate ProcessOutputService
+
+alt Wastes Exist
+    loop For Each Waste
+        ProcessService -> InventoriesService: createWasteInventory(wasteMaterial, wasteWeight, customerName, outputColor)
+        activate InventoriesService
+        InventoriesService --> ProcessService: Waste Inventory Created
+        deactivate InventoriesService
+
+        ProcessService -> ProcessOutputService: logWasteOutput(process, wasteInventory, wasteRequest, WASTE)
+        activate ProcessOutputService
+        ProcessOutputService -> ProcessOutputRepository: save(wasteOutput)
+        activate ProcessOutputRepository
+        ProcessOutputRepository --> ProcessOutputService: Waste Saved
+        deactivate ProcessOutputRepository
+        ProcessOutputService --> ProcessService: Waste Logged
+        deactivate ProcessOutputService
+    end
+end
+
+ProcessService -> ProcessRepository: updateProcessStatus(processId, COMPLETED)
+activate ProcessRepository
+ProcessRepository --> ProcessService: Process Updated
+deactivate ProcessRepository
+
+ProcessService -> ProcessLogRepository: save(endProcessLog)
+activate ProcessLogRepository
+ProcessLogRepository --> ProcessService: Log Saved
+deactivate ProcessLogRepository
+
+ProcessService -> ProcessOutputService: areAllProcessesCompleted(orderId)
+activate ProcessOutputService
+ProcessOutputService --> ProcessService: All Processes Completed: [Yes/No]
+deactivate ProcessOutputService
+
+alt All Processes Completed
+    ProcessService -> OrderService: updateOrderStatus(orderId, COMPLETED)
+    activate OrderService
+    OrderService --> ProcessService: Order Status Updated
+    deactivate OrderService
+end
+
+ProcessService --> ProcessController: Inventory and Completion Response
+deactivate ProcessService
+ProcessController --> ProcessPage: Process Response
+deactivate ProcessController
+ProcessPage --> User: Display Ended Process
+deactivate ProcessPage
+
+@enduml

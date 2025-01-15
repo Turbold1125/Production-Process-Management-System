@@ -1,0 +1,120 @@
+@startuml
+entity "FactoryProcess" {
+    * id : Integer [PK]
+    ---
+    name : String
+    name_en : String
+    description : String
+    outputs : String
+    outputs_en : String
+}
+
+entity "FiberColor" {
+    * id : Integer [PK]
+    ---
+    name : String
+    name_en : String
+}
+
+entity "FiberType" {
+    * id : Integer [PK]
+    ---
+    name : String
+    name_en : String
+}
+
+entity "Material" {
+    * id : Integer [PK]
+    ---
+    name : String
+    name_en : String
+}
+
+entity "Inventories" {
+    * id : Integer [PK]
+    ---
+    fiberColorId : Integer [FK]
+    fiberTypeId : Integer [FK]
+    materialId : Integer [FK]
+    customerName : String
+    roughWeight : Double
+    baleNum : Integer
+    baleWeight : Double
+    bobbinNum : Integer
+    bobbinWeight : Double
+    conWeight : Double
+    dateTime : LocalDateTime
+}
+
+entity "InventoryLog" {
+    * id : Integer [PK]
+    ---
+    inventoryId : Integer [FK]
+    fiberColorId : Integer [FK]
+    fiberTypeId : Integer [FK]
+    materialId : Integer [FK]
+    customerName : String
+    action : String
+    roughWeight : Double
+    baleNum : Integer
+    baleWeight : Double
+    bobbinNum : Integer
+    bobbinWeight : Double
+    conWeight : Double
+    timestamp : LocalDateTime
+}
+
+entity "Order" {
+    * id : Integer [PK]
+    ---
+    customerName : String
+    fiberColorId : Integer [FK]
+    fiberTypeId : Integer [FK]
+    weight : Double
+    status : Enum(Status)
+    orderDate : LocalDateTime
+}
+
+entity "Process" {
+    * id : Integer [PK]
+    ---
+    orderId : Integer [FK]
+    processName : String
+    fiberColorId : Integer [FK]
+    fiberTypeId : Integer [FK]
+    materialId : Integer [FK]
+    status : Enum(ProcessStatus)
+    dateTime : LocalDateTime
+    inputMaterialWeight : Double
+    outputMaterialWeight : Double
+}
+
+entity "ProcessLog" {
+    * id : Integer [PK]
+    ---
+    processId : Integer [FK]
+    fiberColorId : Integer [FK]
+    fiberTypeId : Integer [FK]
+    materialId : Integer [FK]
+    inputMaterialWeight : Double
+    outputMaterialWeight : Double
+    processStartTime : LocalDateTime
+    processEndTime : LocalDateTime
+}
+
+entity "Status" {
+    * name : Enum {NEW, IN_PROGRESS, COMPLETED, CANCELLED}
+}
+
+entity "ProcessStatus" {
+    * name : Enum {NEW, IN_PROGRESS, COMPLETED, CANCELLED}
+}
+
+FiberColor ||--o{ Inventories : "Нэг өнгө олон бараанд ашиглагдана"
+FiberType ||--o{ Inventories : "Нэг төрлийн материал олон бараанд ашиглагдана"
+Material ||--o{ Inventories : "Нэг материал олон бараанд ашиглагдана"
+Order ||--o{ Process : "1-н захиалгад олон процесс"
+Order ||--o{ FactoryProcess : "Олон захиалгад олон процесс"
+Process ||--o{ ProcessLog : "1-н процесс олон логтой"
+Inventories ||--o{ InventoryLog : "1-н бараа олон логтой"
+@enduml

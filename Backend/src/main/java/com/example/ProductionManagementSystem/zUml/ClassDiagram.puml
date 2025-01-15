@@ -1,0 +1,192 @@
+@startuml
+
+package Api {
+    interface OrderApi {
+        + getAllOrders(): List<OrderResponse>
+        + getOrderById(orderId: Integer): OrderResponse
+        + createOrder(order: Order): OrderResponse
+        + deleteOrder(orderId: Integer): void
+    }
+
+    interface InventoriesApi {
+        + getAllInventories(): List<Inventories>
+        + createInventory(inventory: Inventories): Inventories
+        + searchItems(customerName: String, fiberMaterial: String): List<Inventories>
+        + getFilteredInventory(customerName: String, processType: String): List<Inventories>
+    }
+}
+
+package Controller {
+    class OrderController {
+        - orderService: OrderService
+        - processService: ProcessService
+        + getAllOrders(): List<OrderResponse>
+        + getOrderById(orderId: Integer): OrderResponse
+        + createOrder(order: Order): OrderResponse
+        + deleteOrder(orderId: Integer): void
+        + getProcessesByOrderId(id: Integer): List<Process>
+    }
+
+    class InventoriesController {
+        - inventoriesService: InventoriesService
+        + getAllInventories(): List<Inventories>
+        + createInventory(inventory: Inventories): Inventories
+        + searchItems(customerName: String, fiberMaterial: String): List<Inventories>
+        + getFilteredInventory(customerName: String, processType: String): List<Inventories>
+    }
+}
+
+package Service {
+    class OrderService {
+        - orderRepository: OrderRepository
+        - factoryProcessRepository: FactoryProcessRepository
+        - fiberColorRepository: FiberColorRepository
+        - customerRepository: CustomerRepository
+        - fiberTypeRepository: FiberTypeRepository
+        - processRepository: ProcessRepository
+        + getAllOrders(): List<OrderResponse>
+        + getOrderById(orderId: Integer): OrderResponse
+        + createOrder(order: Order): OrderResponse
+        + deleteOrder(orderId: Integer): void
+    }
+
+    class InventoriesService {
+        - inventoriesRepository: InventoriesRepository
+        - inventoryLogRepository: InventoryLogRepository
+        + getAllInventories(): List<Inventories>
+        + getInventoryById(id: Integer): Inventories
+        + searchItems(customerName: String, fiberMaterial: String): List<Inventories>
+        + createInventory(inventory: Inventories): Inventories
+        + getFilteredInventory(customerName: String, processType: String): List<Inventories>
+        + logInventoryAction(inventory: Inventories, action: String): void
+        + getInventoryLogs(): List<InventoryLog>
+    }
+}
+
+package Repo {
+    interface OrderRepository {
+        + findAll(): List<Order>
+        + findById(id: Integer): Order
+        + save(order: Order): Order
+        + deleteById(id: Integer): void
+    }
+
+    interface InventoriesRepository {
+        + findAll(): List<Inventories>
+        + findById(id: Integer): Inventories
+        + save(inventory: Inventories): Inventories
+        + findByCustomerNameContaining(customerName: String): List<Inventories>
+        + findByFiberMaterialContaining(fiberMaterial: String): List<Inventories>
+        + findByCustomerNameContainingAndFiberMaterialContaining(customerName: String, fiberMaterial: String): List<Inventories>
+        + findByCustomerNameAndFiberMaterialIn(customerName: String, fiberMaterials: List<String>): List<Inventories>
+    }
+
+    interface InventoryLogRepository {
+        + save(log: InventoryLog): InventoryLog
+        + findAll(): List<InventoryLog>
+    }
+}
+
+package Model {
+    class Order {
+        - id: Integer
+        - customerName: String
+        - fiberColor: String
+        - fiberType: String
+        - weight: Double
+        - status: Status
+        - orderDate: LocalDateTime
+        - factoryProcesses: List<FactoryProcess>
+    }
+
+    class FactoryProcess {
+        - id: Integer
+        - name: String
+        - description: String
+        - outputs: String
+    }
+
+    class Inventories {
+        - id: Integer
+        - fiberMaterial: String
+        - customerName: String
+        - fiberColor: String
+        - fiberType: String
+        - roughWeight: Double
+        - baleNum: Integer
+        - baleWeight: Double
+        - bobbinNum: Integer
+        - bobbinWeight: Double
+        - conWeight: Double
+        - dateTime: LocalDateTime
+    }
+
+    class InventoryLog {
+        - id: Integer
+        - inventoryId: Integer
+        - customerName: String
+        - fiberMaterial: String
+        - fiberColor: String
+        - fiberType: String
+        - action: String
+        - roughWeight: Double
+        - baleNum: Integer
+        - baleWeight: Double
+        - bobbinNum: Integer
+        - bobbinWeight: Double
+        - conWeight: Double
+        - timestamp: LocalDateTime
+    }
+}
+
+package DTOs {
+    class OrderResponse {
+        - id: Integer
+        - weight: Double
+        - customerName: String
+        - fiberColor: String
+        - fiberType: String
+        - status: String
+        - orderDate: LocalDateTime
+        - factoryProcesses: List<FactoryProcess>
+    }
+}
+
+package Exception {
+    class ErrorResponse {
+        - status: HttpStatusCode
+        - code: String
+        - message: String
+        + BAD_REQUEST: ErrorResponse
+        + NOT_FOUND: ErrorResponse
+        + UNAUTHORIZED: ErrorResponse
+        + SERVICE_ERROR: ErrorResponse
+        + NO_CUSTOMER: ErrorResponse
+        + EXCEEDS_WEIGHT: ErrorResponse
+    }
+
+    class ServiceException extends Exception {
+        - status: HttpStatusCode
+        - code: String
+        + ServiceException(error: ErrorResponse)
+    }
+}
+
+' Relationships
+OrderController --> OrderService
+OrderService --> OrderRepository
+OrderRepository --> Order
+Order --> FactoryProcess
+OrderApi <|.. OrderController
+OrderResponse --> Order
+ServiceException *-- ErrorResponse : error
+
+InventoriesController --> InventoriesService
+InventoriesService --> InventoriesRepository
+InventoriesService --> InventoryLogRepository
+InventoriesRepository --> Inventories
+InventoryLogRepository --> InventoryLog
+InventoriesApi <|.. InventoriesController
+Inventories --> InventoryLog
+
+@enduml

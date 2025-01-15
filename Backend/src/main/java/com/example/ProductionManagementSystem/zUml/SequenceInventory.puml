@@ -1,0 +1,84 @@
+@startuml
+
+actor User
+
+participant "InventoryPage" as InventoryPage
+participant "InventoryController" as InventoryController
+participant "InventoryService" as InventoryService
+participant "InventoryRepository" as InventoryRepository
+participant "InventoryLogRepository" as InventoryLogRepository
+
+User -> InventoryPage: Open Inventory Page
+activate InventoryPage
+InventoryPage -> InventoryController: GET /api/inventory/all
+activate InventoryController
+InventoryController -> InventoryService: getAllInventories()
+activate InventoryService
+InventoryService -> InventoryRepository: findAll()
+activate InventoryRepository
+InventoryRepository --> InventoryService: List<Inventory>
+deactivate InventoryRepository
+InventoryService --> InventoryController: List<Inventory>
+deactivate InventoryService
+InventoryController --> InventoryPage: List<Inventory
+deactivate InventoryController
+InventoryPage --> User: Display Inventory List
+deactivate InventoryPage
+
+User -> InventoryPage: Create Inventory
+activate InventoryPage
+InventoryPage -> InventoryController: POST /api/inventory/create
+activate InventoryController
+InventoryController -> InventoryService: createInventory(item)
+activate InventoryService
+InventoryService -> InventoryRepository: save(item)
+activate InventoryRepository
+InventoryRepository --> InventoryService: Inventory
+deactivate InventoryRepository
+InventoryService -> InventoryService: logInventoryAction(item, "CREATE")
+InventoryService -> InventoryLogRepository: save(log)
+activate InventoryLogRepository
+InventoryLogRepository --> InventoryService: InventoryLog
+deactivate InventoryLogRepository
+InventoryService --> InventoryController: Inventory
+deactivate InventoryService
+InventoryController --> InventoryPage: Inventory
+deactivate InventoryController
+InventoryPage --> User: Display Inventory
+deactivate InventoryPage
+
+User -> InventoryPage: Search Inventory
+activate InventoryPage
+InventoryPage -> InventoryController: GET /api/inventory/search
+activate InventoryController
+InventoryController -> InventoryService: searchInventory(customerName, fiberMaterial, fiberColor, fiberType)
+activate InventoryService
+InventoryService -> InventoryRepository: searchInventory(customerName, fiberMaterial, fiberColor, fiberType)
+activate InventoryRepository
+InventoryRepository --> InventoryService: List<Inventory>
+deactivate InventoryRepository
+InventoryService --> InventoryController: List<Inventory
+deactivate InventoryService
+InventoryController --> InventoryPage: List<Inventory
+deactivate InventoryController
+InventoryPage --> User: Display Search Results
+deactivate InventoryPage
+
+User -> InventoryPage: View Inventory Logs
+activate InventoryPage
+InventoryPage -> InventoryController: GET /api/inventory/logs
+activate InventoryController
+InventoryController -> InventoryService: getAllInventoryLog()
+activate InventoryService
+InventoryService -> InventoryLogRepository: findAll()
+activate InventoryLogRepository
+InventoryLogRepository --> InventoryService: List<InventoryLog
+deactivate InventoryLogRepository
+InventoryService --> InventoryController: List<InventoryLog
+deactivate InventoryService
+InventoryController --> InventoryPage: List<InventoryLog
+deactivate InventoryController
+InventoryPage --> User: Display Inventory Logs
+deactivate InventoryPage
+
+@enduml

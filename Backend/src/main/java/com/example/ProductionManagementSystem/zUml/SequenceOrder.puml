@@ -1,0 +1,54 @@
+@startuml
+
+actor User
+
+participant "OrderForm" as OrderForm
+participant "OrderController" as OrderController
+participant "OrderService" as OrderService
+participant "OrderRepository" as OrderRepository
+participant "CustomerRepository" as CustomerRepository
+participant "FiberColorRepository" as FiberColorRepository
+participant "FiberTypeRepository" as FiberTypeRepository
+participant "FactoryProcessRepository" as FactoryProcessRepository
+
+User -> OrderForm: Open Order Form
+activate OrderForm
+OrderForm -> OrderForm: Fill Order Details
+OrderForm -> OrderController: POrderServiceT /api/order/create
+activate OrderController
+OrderController -> OrderService: createOrder(order)
+activate OrderService
+
+OrderService -> CustomerRepository: findByName(order.customerName)
+activate CustomerRepository
+CustomerRepository --> OrderService: Customer
+deactivate CustomerRepository
+
+OrderService -> FiberColorRepository: findByName(order.fiberColor)
+activate FiberColorRepository
+FiberColorRepository --> OrderService: FiberColor
+deactivate FiberColorRepository
+
+OrderService -> FiberTypeRepository: findByName(order.fiberType)
+activate FiberTypeRepository
+FiberTypeRepository --> OrderService: FiberType
+deactivate FiberTypeRepository
+
+OrderService -> FactoryProcessRepository: findById(process.id)
+activate FactoryProcessRepository
+FactoryProcessRepository --> OrderService: FactoryProcess
+deactivate FactoryProcessRepository
+
+OrderService -> OrderRepository: save(order)
+activate OrderRepository
+OrderRepository --> OrderService: Order
+deactivate OrderRepository
+
+OrderService --> OrderController: OrderResponse
+deactivate OrderService
+OrderController --> OrderForm: OrderResponse
+deactivate OrderController
+OrderForm --> User: Display Order
+deactivate OrderForm
+
+@enduml

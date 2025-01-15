@@ -1,0 +1,96 @@
+@startuml
+skinparam style strictuml
+skinparam componentStyle rectangle
+skinparam shadowing false
+skinparam backgroundColor #f7f7f7
+skinparam componentBackgroundColor #ffffff
+skinparam componentBorderColor #000000
+skinparam componentFontColor #2c3e50
+skinparam packageBackgroundColor #f5f5f5
+skinparam packageBorderColor #cccccc
+skinparam packageFontColor #2c3e50
+skinparam arrowColor #2c3e50
+skinparam arrowFontName Arial
+skinparam arrowFontColor #34495e
+skinparam arrowFontSize 12
+
+title **Дэлгэрэнгүй Системийн Архитектур**
+legend left
+  **Frontend (React):** Хэрэглэгчидтэй шууд харьцдаг давхарга.
+  **Backend (Spring Boot):** Логик боловсруулах ба өгөгдөлтэй ажиллах давхарга.
+  **Database (PostgreSQL):** Мэдээллийг хадгалах үндсэн сан.
+  **Authentication (JWT):** Нэвтрэлт ба аюулгүй байдал хангах.
+  **Arrow Key:**
+  1. **→**: Үйлдэл эсвэл өгөгдөл илгээх.
+  2. **←**: Үйлдлийн хариу эсвэл өгөгдөл буцаах.
+end legend
+
+package "Frontend (React)" <<Rectangle>> {
+  component "User Interface (UI)" as UI
+}
+
+package "Backend (Spring Boot)" <<Rectangle>> {
+  package "Controller Layer" {
+    component "Order Controller"
+    component "Process Controller"
+    component "Authentication Controller"
+  }
+
+  package "Service Layer" {
+    component "Order Service"
+    component "Process Service"
+    component "Inventory Service"
+    component "Security Service"
+  }
+
+  package "Repository Layer" {
+    component "Order Repository"
+    component "Process Repository"
+    component "Inventory Repository"
+    component "User Repository"
+  }
+}
+
+package "Database (PostgreSQL)" <<Cloud>> {
+  database "PostgreSQL DB" as Database {
+    frame "Tables" {
+      [Orders Table]
+      [Processes Table]
+      [Users Table]
+      [Inventory Table]
+      [Logs Table]
+    }
+  }
+}
+
+package "Authentication (JWT)" <<Rectangle>> {
+  component "JWT Token Provider" as JWT
+}
+
+' Interaction with Frontend
+UI -down-> "Order Controller" : Захиалга үүсгэх, харах
+UI -down-> "Process Controller" : Процесс харах
+UI -down-> "Authentication Controller" : Нэвтрэлт
+
+' Controller to Service Interaction
+"Order Controller" -right-> "Order Service" : Захиалгын логик
+"Process Controller" -right-> "Process Service" : Процессийн логик
+"Authentication Controller" -right-> "Security Service" : Нэвтрэх баталгаажуулалт
+
+' Service to Repository Interaction
+"Order Service" -down-> "Order Repository" : Захиалгын өгөгдөл
+"Process Service" -down-> "Process Repository" : Процессийн өгөгдөл
+"Inventory Service" -down-> "Inventory Repository" : Хувьцааны үлдэгдэл
+"Security Service" -down-> "User Repository" : Хэрэглэгчийн өгөгдөл
+
+' Repository to Database Interaction
+"Order Repository" --> Database : Orders Table
+"Process Repository" --> Database : Processes Table
+"Inventory Repository" --> Database : Inventory Table
+"User Repository" --> Database : Users Table
+
+' Authentication Flow
+UI -up-> JWT : Нэвтрэлтийн хүсэлт
+JWT -up-> "Security Service" : Токены баталгаажуулалт
+
+@enduml

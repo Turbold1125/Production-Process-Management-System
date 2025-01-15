@@ -1,0 +1,27 @@
+@startuml
+|User|
+start
+:Open Order Menu;
+:Select Order;
+:Open Fiber Receive Form;
+
+:Fill Fiber Receive Details;
+:Submit Fiber Receive;
+
+:Validate Fiber Receive Details;
+note right
+Check if all required fields
+are filled and valid
+end note
+
+if (Validation Passed?) then (yes)
+    :Create Fiber Receive Record;
+    :Save Fiber Receive to Database;
+    :Update Order Status;
+    :Show Success Message;
+else (no)
+    :Show Error Message;
+endif
+
+stop
+@enduml

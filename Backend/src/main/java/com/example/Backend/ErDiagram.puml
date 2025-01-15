@@ -1,0 +1,158 @@
+@startuml
+
+entity Order {
+    Long id
+    double weight
+    LocalDate orderDate
+    Customer customer
+    FiberType fiberType
+    FiberColor color
+    List<FactoryProcess> factoryProcesses
+}
+
+entity ProcessDye {
+    Long id
+    double available_weight
+    double total_weight
+    ProcessStatus status
+    LocalDateTime dateStart
+    LocalDateTime dateEnd
+    Order order
+}
+
+entity FiberColor {
+    Long id
+    String name
+    String name_en
+}
+
+entity FiberDye {
+    Long id
+    LocalDateTime dateTime
+    double rough_weight
+    double bale_weight
+    double con_weight
+    double moisture
+    int baleNum
+    Order order
+    ProcessDye processDye
+    FiberColor color
+    FiberColor out_color
+}
+
+entity FiberDyeRequest {
+    Long orderId
+    Long processId
+    Long fiberColorId
+    Long fiberOutColorId
+    double roughWeight
+    double baleWeight
+    double conWeight
+    double moisture
+}
+
+entity FiberDyeResponse {
+    Long id
+    LocalDateTime dateTime
+    double rough_weight
+    double bale_weight
+    double con_weight
+    double moisture
+    int baleNum
+    Order order
+    ProcessDye processDye
+    FiberColor color
+    FiberColor out_color
+}
+
+entity FiberReceive {
+    Long id
+    LocalDateTime dateTime
+    double rough_weight
+    double bale_weight
+    double con_weight
+    double moisture
+    int baleNum
+    Order order
+    FiberColor color
+}
+
+entity ProcessReceive {
+    Long id
+    double available_weight
+    double total_weight
+    ProcessStatus status
+    LocalDateTime dateStart
+    LocalDateTime dateEnd
+    Order order
+    List<FiberReceive> fiberReceives
+}
+
+entity ServiceException {
+    ErrorResponse errorResponse
+}
+
+enum ErrorResponse {
+    NO_ORDER
+    NO_PROCESS_RECEIVE
+    NO_FIBER_COLOR
+    EXCEEDS_WEIGHT
+    EXCEEDS_AVAILABLE_WEIGHT
+    NO_CONTENT
+}
+
+enum ProcessStatus {
+    NEW
+    PENDING
+    IN_PROGRESS
+    COMPLETED
+}
+
+entity Customer {
+    Long id
+    String name
+    String address
+    String email
+    String phoneNumber
+}
+
+entity FiberType {
+    Long id
+    String name
+    String description
+}
+
+entity FactoryProcess {
+    Long id
+    String name
+    String name_en
+    String description
+    String outputs
+    String outputs_en
+}
+
+Order "1" -- "*" FiberDye : contains
+ProcessDye "1" -- "*" FiberDye : contains
+FiberColor "1" -- "*" FiberDye : uses
+FiberDyeRequest "1" -- "1" Order : references
+FiberDyeRequest "1" -- "1" ProcessDye : references
+FiberDyeRequest "1" -- "1" FiberColor : references
+FiberDyeResponse "1" -- "1" Order : references
+FiberDyeResponse "1" -- "1" ProcessDye : references
+FiberDyeResponse "1" -- "1" FiberColor : references
+ServiceException "1" -- "1" ErrorResponse : contains
+Order "1" -- "1" Customer : belongs to
+Order "1" -- "1" FiberType : uses
+Order "1" -- "1" FiberColor : contains
+Customer "1" -- "*" Order : places
+FiberType "1" -- "*" Order : uses
+FiberColor "1" -- "*" Order : uses
+FiberDye "1" -- "1" FiberColor : uses
+FiberDye "1" -- "1" FiberType : uses
+Order "1" -- "*" FiberReceive : contains
+FiberReceive "1" -- "1" FiberColor : uses
+Order "1" -- "*" ProcessReceive : contains
+ProcessReceive "1" -- "*" FiberReceive : contains
+Order "1" -- "*" FactoryProcess : contains
+
+@enduml

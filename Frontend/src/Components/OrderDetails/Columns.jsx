@@ -249,14 +249,14 @@ export const processIOColumns = [
     dataIndex: 'id',
     key: 'id',
     align: "center",
-    sorter: (a, b) => a.id - b.id,
+    // sorter: (a, b) => a.id - b.id,
   },
   {
     title: 'Процессийн нэр',
     dataIndex: 'processName',
     key: 'processId',
     align: "center",
-    sorter: (a, b) => a.processId - b.processId,
+    // sorter: (a, b) => a.processId - b.processId,
   },
   {
     title: 'Материал',
@@ -269,7 +269,7 @@ export const processIOColumns = [
     dataIndex: 'weight',
     key: 'weight',
     align: "center",
-    sorter: (a, b) => a.weight - b.weight,
+    // sorter: (a, b) => a.weight - b.weight,
   },
   {
     title: 'Өнгө',
@@ -285,7 +285,7 @@ export const processIOColumns = [
     dataIndex: 'inventoryId',
     key: 'inventoryId',
     align: "center",
-    sorter: (a, b) => a.inventoryId - b.inventoryId,
+    // sorter: (a, b) => a.inventoryId - b.inventoryId,
   },
   {
     title: 'Харилцагчийн нэр',
@@ -298,15 +298,15 @@ export const processIOColumns = [
     dataIndex: 'dateTime',
     key: 'dateTime',
     align: "center",
-    // render: (dateTime) =>
-    //   dateTime ? new Date(dateTime).toLocaleString() : 'Not Available',
-      render: (dateTime) => (dateTime ? formatDate(dateTime) : "-")
+    render: (dateTime) => (dateTime ? formatDate(dateTime) : "-"),
+    sorter: (a, b) => new Date(a.dateTime) - new Date(b.dateTime),
+    defaultSortOrder: 'descend',
   },
-  {
-    title: 'Захиалгын дугаар',
-    dataIndex: 'orderId',
-    key: 'orderId',
-    align: "center",
-    sorter: (a, b) => a.orderId - b.orderId,
-  },
+  // {
+  //   title: 'Захиалгын дугаар',
+  //   dataIndex: 'orderId',
+  //   key: 'orderId',
+  //   align: "center",
+  //   sorter: (a, b) => a.orderId - b.orderId,
+  // },
 ];

@@ -94,9 +94,9 @@
             }
     
             String inputColor = processOutputService.checkInputColor(request.getOrderId(), firstColor);
-    
+
             String inputMaterials = String.join(", ", uniqueMaterials);
-    
+            
             process.setUserId(request.getUserId());
             process.setUsername(user.getUsername());
             process.setInputMaterial(inputMaterials);
@@ -105,10 +105,12 @@
             process.setStatus(ProcessStatus.IN_PROGRESS);
             process.setDateTime(LocalDateTime.now());
             processRepository.save(process);
-    
+
             logProcessAction(process, Status.START.name(), request.getUserId(), user.getUsername());
     
             orderService.updateOrderStatus(request.getOrderId(), Status.IN_PROGRESS);
+
+
     
             return process;
         }

@@ -40,6 +40,9 @@ public class Order {
     @Column(name = "order_date",  nullable = false)
     private LocalDateTime orderDate;
 
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
     @ManyToMany
     @JoinTable(
             name = "order_2_process",

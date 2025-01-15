@@ -16,6 +16,7 @@ public class OrderResponse {
     private String fiberType;
     private String status;
     private LocalDateTime orderDate;
+    private LocalDateTime updatedAt;
     private List<FactoryProcess> factoryProcesses;
 
     public OrderResponse(Order order) {
@@ -25,6 +26,7 @@ public class OrderResponse {
         this.fiberColor = order.getFiberColor();
         this.fiberType = order.getFiberType();
         this.status = order.getStatus().name();
+        this.updatedAt = order.getUpdatedAt();
         this.orderDate = order.getOrderDate();
         this.factoryProcesses = order.getFactoryProcesses();
     }

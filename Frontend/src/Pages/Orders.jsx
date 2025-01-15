@@ -77,8 +77,17 @@ const Orders = () => {
       align: "center",
       render: (dateTime) => (dateTime ? formatDate(dateTime) : "-"),
       sorter: (a, b) => new Date(a.orderDate) - new Date(b.orderDate),
+      defaultSortOrder: 'descend',
     },
-
+    {
+      title: "Өөрчилсөн огноо",
+      dataIndex: "updatedAt",
+      key: "updatedAt",
+      align: "center",
+      render: (updatedAt) => (updatedAt ? formatDate(updatedAt) : "-"),
+      sorter: (a, b) => new Date(a.updatedAt) - new Date(b.updatedAt),
+      defaultSortOrder: 'descend',
+    },
     {
       title: "Өнгө", dataIndex: ["fiberColor"], key: "color",
       align: "center", render: (color) => <Tag color="geekblue">{color}</Tag>

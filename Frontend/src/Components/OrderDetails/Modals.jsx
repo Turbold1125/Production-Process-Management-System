@@ -9,6 +9,7 @@ export const StartProcessModal = ({ visible, onCancel, onOk, inventoryColumns, s
         visible={visible}
         onCancel={onCancel}
         onOk={onOk}
+        width={900}
     >
         <Table
             columns={inventoryColumns}

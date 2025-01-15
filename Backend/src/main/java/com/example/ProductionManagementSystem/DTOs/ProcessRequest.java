@@ -17,6 +17,6 @@ public class ProcessRequest {
     private String inputMaterialColor;
     private String OutputMaterialColor;
     private List<FiberRequest> fibers;
-    private Double totalInputWeight;
+//    private Double totalInputWeight;
 }
 

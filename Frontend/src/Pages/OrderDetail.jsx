@@ -14,6 +14,7 @@ import { useInventory } from "../hooks/useInventory";
 import ReceiveItemModal from "../Components/Inventory/ReceiveItemModal";
 import Header from "../Components/OrderDetails/Header";
 import OrderInfo from "../Components/OrderDetails/OrderInfo";
+import StartProcessModa from "../Components/OrderDetails/StartProcessModa";
 
 const { Title } = Typography;
 const { TabPane } = Tabs;
@@ -93,6 +94,11 @@ const OrderDetailsLayout = () => {
   const handleOpenModal = () => {
     setIsModalVisible(true);
   };
+  
+  const handleCancelStartProcess = () => {
+    setStartProcessModalVisible(false);
+    form.resetFields();
+  }
 
   const handleCancel = () => {
     setIsModalVisible(false);
@@ -144,6 +150,7 @@ const OrderDetailsLayout = () => {
 
   const handleProcessClick = (index) => {
     setSelectedProcessIndex(index);
+    console.log("OrderDetails:::", orderDetails)
   };
 
   const handleStartProcess = async () => {
@@ -165,7 +172,6 @@ const OrderDetailsLayout = () => {
           inputMaterialWeight: fiber.selectedWeight,
           inputMaterial: fiber.fiberMaterial
         })),
-        totalInputWeight,
       };
 
       const updatedProcesses = processes.map((process, index) =>
@@ -510,13 +516,21 @@ const OrderDetailsLayout = () => {
         </button>
       )}
 
-      <StartProcessModal
+      {/* <StartProcessModal
         visible={startProcessModalVisible}
         onCancel={() => setStartProcessModalVisible(false)}
         onOk={handleStartProcess}
         inventoryColumns={inventoryColumns(selectedFibers, setSelectedFibers)}
         selectedFibers={selectedFibers}
         totalInputWeight={totalInputWeight}
+      /> */}
+      <StartProcessModa
+        visible={startProcessModalVisible}
+        orderDetails={orderDetails}
+        selectedProcess={processes[selectedProcessIndex]}
+        onCancel={handleCancelStartProcess}
+        selectedFibers={selectedFibers}
+        setSelectedFibers={setSelectedFibers}
       />
 
       <EndProcessModal

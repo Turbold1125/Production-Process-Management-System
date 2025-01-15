@@ -141,6 +141,7 @@ public class OrderService {
         orderRepository.findById(orderId).ifPresent(order -> {
             if (!order.getStatus().equals(status)) {
                 order.setStatus(status);
+                order.setUpdatedAt(LocalDateTime.now());
                 orderRepository.save(order);
             }
         });

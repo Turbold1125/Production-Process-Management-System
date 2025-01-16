@@ -1,8 +1,10 @@
 import React, { useContext, useState } from "react";
-import { Modal, Table, message } from "antd";
+import { Modal, Table, Typography, message } from "antd";
 import { inventoryColumns } from "./Columns";
 import { UserContext } from "../../Context/userContext";
 import { processService } from "../../Services/process.service";
+
+const { Title } = Typography;
 
 const StartProcessModa = ({
     isModalVisible,
@@ -40,7 +42,7 @@ const StartProcessModa = ({
             })),
         };
         try {
-            message.loading({ content: "Starting process...", key: messageKey, duration: 1});
+            message.loading({ content: "Starting process...", key: messageKey, duration: 1 });
             await processService.startProcess(payload);
             message.success({
                 content: `Process "${selectedProcess.processName}" started successfully!`,
@@ -60,11 +62,17 @@ const StartProcessModa = ({
 
     return (
         <Modal
-            title="Start Process"
+            title={
+                <Title level={4} style={{ textAlign: 'center', padding: '12px 0px' }}>
+                    Процесс эхлүүлэх
+                </Title>
+            }
             visible={isModalVisible}
             onCancel={onCancel}
             onOk={handleStartProcess}
             width={800}
+            okText="Эхлүүлэх"
+            cancelText="Цуцлах"
         >
             <Table
                 columns={inventoryColumns(selectedFibers, setSelectedFibers)}

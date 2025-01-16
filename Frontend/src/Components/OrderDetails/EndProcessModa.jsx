@@ -1,10 +1,10 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Modal, Select, Input, message } from "antd";
+import { Modal, Select, Input, message, Typography } from "antd";
 import { UserContext } from "../../Context/userContext";
 import { processService } from "../../Services/process.service";
 import { constantsService } from "../../Services/constants.service";
 
-
+const { Title } = Typography;
 const { Option } = Select;
 
 const EndProcessModa = ({
@@ -98,10 +98,16 @@ const EndProcessModa = ({
 
     return (
         <Modal
-            title="Процесс дуусгах"
+            title={
+                <Title level={4} style={{ textAlign: 'center', padding: '12px 0px' }}>
+                    Процесс дуусгах
+                </Title>
+            }
             visible={isModalVisible}
             onCancel={onCancel}
             onOk={handleEndProcess}
+            okText="Дуусгах"
+            cancelText="Цуцлах"
         >
             <div style={{ marginBottom: "16px" }}>
                 <label>Гаралтын материал:</label>

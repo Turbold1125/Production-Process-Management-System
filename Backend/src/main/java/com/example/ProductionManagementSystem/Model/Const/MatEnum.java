@@ -6,8 +6,8 @@ public enum MatEnum {
     ROVEN("Цувимал", "Roven"),
     SINGLE_YARN("Дан утас", "Single Yarn"),
     WINDED_YARN("Ороосон утас", "Winded Yarn"),
-    DOUBLED_YARN("Давхарласан утас", "Doubled Yarn"),
-    TWISTED_YARN("Эрчилсэн утас", "Twisted Yarn");
+    DOUBLED_YARN("Давхар утас", "Doubled Yarn"),
+    TWISTED_YARN("Мушгисан утас", "Twisted Yarn");
 
     private final String name;
     private final String nameEn;

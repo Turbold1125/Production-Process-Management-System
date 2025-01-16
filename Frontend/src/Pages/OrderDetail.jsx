@@ -1,16 +1,10 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Card, Typography, Button, Row, Col, Table, Spin, Alert, message, Tabs, Tag, Form } from "antd";
 import { CheckCircleOutlined, FilePdfOutlined, PlayCircleOutlined, PlusOutlined } from "@ant-design/icons";
-import axios from "axios";
 import useOrderDetails from "../hooks/useOrderDetailss";
 import { inventoryColumns, processColumns, processIOColumns, processLogColumns } from "../Components/OrderDetails/Columns";
-import { EndProcessModal, StartProcessModal } from "../Components/OrderDetails/Modals";
 import StepsComponent from "../Components/OrderDetails/Steps";
-import { useColors } from "../hooks/useColors";
-import { UserContext } from "../Context/userContext";
-import useProcessAction from "../hooks/useProcessAction";
-import { useInventory } from "../hooks/useInventory";
 import ReceiveItemModal from "../Components/Inventory/ReceiveItemModal";
 import Header from "../Components/OrderDetails/Header";
 import OrderInfo from "../Components/OrderDetails/OrderInfo";
@@ -18,21 +12,17 @@ import StartProcessModa from "../Components/OrderDetails/StartProcessModa";
 import EndProcessModa from "../Components/OrderDetails/EndProcessModa";
 import InputOutputCard from "../Components/OrderDetails/InputOutputCard";
 import { processService } from "../Services/process.service";
+import { reportService } from "../Services/report.service";
 
-const { Title } = Typography;
 const { TabPane } = Tabs;
 
 const getStatusTag = (status) => {
-  switch (status) {
-    case "COMPLETED":
-      return <Tag color="green">{status}</Tag>;
-    case "IN_PROGRESS":
-      return <Tag color="blue">{status}</Tag>;
-    case "PENDING":
-      return <Tag color="orange">{status}</Tag>;
-    default:
-      return <Tag>{status}</Tag>;
-  }
+  const colorMap = {
+    COMPLETED: "green",
+    IN_PROGRESS: "blue",
+    PENDING: "orange",
+  };
+  return <Tag color={colorMap[status] || "default"}>{status}</Tag>;
 };
 
 const OrderDetailsLayout = () => {
@@ -40,8 +30,20 @@ const OrderDetailsLayout = () => {
 
   const navigate = useNavigate();
 
-  const { orderDetails, processes: initialProcesses, loading, error, processLogs, fetchProcessLogs, fetchProcesses, fetchOrderById, processInputs, processOutputs, fetchProcessInputs, fetchProcessOutputs } = useOrderDetails(orderId);
-  const { createInventory } = useInventory();
+  const {
+    orderDetails,
+    processes: initialProcesses,
+    loading,
+    error,
+    processLogs,
+    fetchProcessLogs,
+    fetchProcesses,
+    fetchOrderById,
+    processInputs,
+    processOutputs,
+    fetchProcessInputs,
+    fetchProcessOutputs
+  } = useOrderDetails(orderId);
 
   const [processes, setProcesses] = useState([]);
   const [selectedProcessIndex, setSelectedProcessIndex] = useState(0);
@@ -52,115 +54,80 @@ const OrderDetailsLayout = () => {
   const [activeTab, setActiveTab] = useState("1");
 
   const [endProcessModalVisible, setEndProcessModalVisible] = useState(false);
-  
-  const [inventory, setNoInventory] = useState(false);
 
-  const [isModalVisible, setIsModalVisible] = useState(false);
-
-  const [form] = Form.useForm();
-
-  const handleReceiveItem = async (values) => {
-    const requestBody = {
-      fiberMaterial: values.fiberMaterial,
-      customerName: values.customerName,
-      fiberColor: values.fiberColor,
-      fiberType: values.fiberType,
-      roughWeight: values.roughWeight,
-      baleWeight: values.baleWeight,
-      bobbinWeight: values.bobbinWeight,
-      baleNum: values.baleNum,
-      bobbinNum: values.bobbinNum,
-    };
-
-    try {
-      await createInventory(requestBody);
-      message.success('Амжилттай хүлээн авлаа');
-      setIsModalVisible(false);
-      form.resetFields();
-    } catch (error) {
-      message.error('Хүлээн авахад алдаа гарлаа');
-    }
-  };
-
-  const handleOpenModal = () => {
-    setIsModalVisible(true);
-  };
-
-  const handleCancel = () => {
-    setIsModalVisible(false);
-    form.resetFields();
-  };
+  const [isReceiveModalVisible, setIsReceiveModalVisible] = useState(false);
+  const [selectedInputMaterial, setSelectedInputMaterial] = useState(null);
 
   useEffect(() => {
     setProcesses(initialProcesses);
   }, [initialProcesses]);
 
-  // useEffect(() => {
-  //   const fetchRequiredMaterials = async () => {
-  //     const selectedProcess = processes[selectedProcessIndex];
-  //     if (!selectedProcess) return;
-
-  //     try {
-  //       const response = await processService.requiredMaterial(
-  //         selectedProcess.processName,
-  //         orderDetails?.customerName
-  //       );
-  //       setFilteredInventory(response);
-  //     } catch {
-  //       message.error("Шаардлагатай материалыг татаж чадсангүй.");
-  //     }
-  //   };
-
-  //   fetchRequiredMaterials();
-  // }, [selectedProcessIndex, processes, orderDetails]);
-
   useEffect(() => {
-    if (processes.length > 0 && processes[selectedProcessIndex]) {
-      fetchMaterialsForProcess(processes[selectedProcessIndex].processName);
+    const fetchRequiredMaterials = async () => {
+      const selectedProcess = processes[selectedProcessIndex];
+      if (!selectedProcess) return;
 
-      const availableInventory = filteredInventory.length > 0;
-      setNoInventory(!availableInventory);
-    }
-  }, [selectedProcessIndex, processes]);
+      try {
+        const response = await processService.requiredMaterial(
+          selectedProcess.processName,
+          orderDetails?.customerName
+        );
+        setFilteredInventory(response);
+      } catch {
+        message.error("Шаардлагатай материалыг татаж чадсангүй.");
+      }
+    };
 
-  const fetchMaterialsForProcess = async (processName) => {
-    try {
-      const response = await processService.requiredMaterial(processName, orderDetails?.customerName);
-      setFilteredInventory(response);
-    } catch (error) {
-      message.error("Шаардлагатай материалыг татаж чадсангүй.");
-    }
-  };
+    fetchRequiredMaterials();
+  }, [selectedProcessIndex, processes, orderDetails]);
 
   const handleProcessClick = (index) => {
     setSelectedProcessIndex(index);
+
+    const selectedProcess = processes[index];
+    const matchingFactoryProcess = orderDetails?.factoryProcesses.find(
+      (factoryProcess) => factoryProcess.name === selectedProcess?.processName
+    );
+
+
+    const selectedInputMaterial = matchingFactoryProcess?.inputs || null;
+    
+    setSelectedInputMaterial(selectedInputMaterial)
     console.log("OrderDetails:::", orderDetails)
+    console.log("selectedProcessIndex:::", processes[selectedProcessIndex])
+    console.log("SelectedProcessMaterial", selectedInputMaterial)
   };
-
-  const handleStartProcessSuccess = () => {
-    setStartProcessModalVisible(false);
-    fetchProcesses();
-    fetchProcessLogs();
-    fetchProcessInputs();
-    fetchProcessOutputs();
-    fetchOrderById(orderId);
-  }
-
-  const handleEndProcessSuccess = () => {
-    setEndProcessModalVisible(false);
-    fetchProcesses();
-    fetchProcessLogs();
-    fetchProcessInputs();
-    fetchProcessOutputs();
-    fetchOrderById(orderId);
-  }
-
 
   /* ---------------------------------------- */
 
+  const handleProcessSuccess = (setModalVisible) => {
+    setModalVisible(false);
+    fetchProcesses();
+    fetchProcessLogs();
+    fetchProcessInputs();
+    fetchProcessOutputs();
+    fetchOrderById(orderId);
+  }
 
+  const handleStartProcessSuccess = () => {
+    handleProcessSuccess(setStartProcessModalVisible);
+  };
 
+  const handleEndProcessSuccess = () => {
+    handleProcessSuccess(setEndProcessModalVisible);
+  };
 
+  const handleOpenModal = () => {
+    setIsReceiveModalVisible(true);
+  };
+
+  const handleReceiveItemSuccess = () => {
+    setIsReceiveModalVisible(false)
+    fetchProcesses();
+    fetchOrderById(orderId);
+  }
+
+  /* ---------------------------------------- */
 
   const handleTabChange = (key) => {
     setActiveTab(key);
@@ -185,22 +152,10 @@ const OrderDetailsLayout = () => {
 
   const handleDownloadReport = async () => {
     try {
-      const response = await axios.get(`http://localhost:8080/api/reports/order/${orderId}`, {
-        responseType: 'blob',
-      });
-
-      const url = window.URL.createObjectURL(new Blob([response.data], { type: 'application/pdf' }));
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', `Order_Report_${orderId}.pdf`);
-      document.body.appendChild(link);
-      link.click();
-      link.parentNode.removeChild(link);
-
-      message.success("PDF татах амжилттай боллоо.");
+      await reportService.downloadOrderReport(orderId);
+      message.success("PDF файл амжилттай татагдлаа.");
     } catch (error) {
-      console.error("Error downloading the report:", error);
-      message.error("PDF татахад алдаа гарлаа.");
+      message.error(error.message);
     }
   };
 
@@ -379,7 +334,6 @@ const OrderDetailsLayout = () => {
       <StartProcessModa
         isModalVisible={startProcessModalVisible}
         onCancel={() => setStartProcessModalVisible(false)}
-        // onCancel={handleCancelStartProcess}
         orderDetails={orderDetails}
         selectedProcess={processes[selectedProcessIndex]}
         selectedFibers={selectedFibers}
@@ -396,13 +350,13 @@ const OrderDetailsLayout = () => {
       />
 
       <ReceiveItemModal
-        isModalVisible={isModalVisible}
-        handleCancel={handleCancel}
-        handleReceiveItem={handleReceiveItem}
-        form={form}
+        isModalVisible={isReceiveModalVisible}
+        handleCancel={() => setIsReceiveModalVisible(false)}
+        setRefresh={handleReceiveItemSuccess}
         defaultCustomerName={orderDetails?.customerName}
-        defaultColor={orderDetails?.fiberColor}
+        defaultFiberColor={orderDetails?.fiberColor}
         defaultFiberType={orderDetails?.fiberType}
+        defaultMaterial={selectedInputMaterial}
       />
 
     </div>

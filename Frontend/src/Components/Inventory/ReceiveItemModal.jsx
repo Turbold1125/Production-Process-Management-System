@@ -7,20 +7,29 @@ import { inventoryService } from '../../Services/Inventory.service';
 const { Title } = Typography;
 const { Option } = Select;
 
-const ReceiveItemModal = ({ isModalVisible, handleCancel, setRefresh }) => {
+const ReceiveItemModal = ({
+    isModalVisible,
+    handleCancel,
+    setRefresh,
+    defaultCustomerName = null,
+    defaultFiberColor = null,
+    defaultFiberType = null,
+    defaultMaterial = null
+}) => {
     const [fiberColors, setFiberColors] = useState([]);
     const [fiberTypes, setFiberTypes] = useState([]);
     const [customers, setCustomers] = useState([]);
     const [materials, setMaterials] = useState([]);
     const [dataSource, setDataSource] = useState([]);
-    
+
     const [selectedMaterial, setSelectedMaterial] = useState('');
-    
+
     const [form] = Form.useForm();
 
     useEffect(() => {
         if (isModalVisible) {
             fetchModalData();
+            console.log(`defaultCustomerName: ${defaultCustomerName}, defaultFiberColor: ${defaultFiberColor}, defaultFiberType: ${defaultFiberType}, defaultMaterial: ${defaultMaterial}`);
         }
     }, [isModalVisible]);
 
@@ -116,18 +125,18 @@ const ReceiveItemModal = ({ isModalVisible, handleCancel, setRefresh }) => {
     return (
         <Modal
             title={
-                <Title level={4} style={{ textAlign: 'center', margin: 0 }}>
-                    Receive Items
+                <Title level={4} style={{ textAlign: 'center', padding: '12px 0px' }}>
+                    Түүхий эд хүлээн авах
                 </Title>
             }
             visible={isModalVisible}
             onCancel={handleCancel}
             footer={[
                 <Button key="cancel" onClick={handleCancel}>
-                    Cancel
+                    Цуцлах
                 </Button>,
                 <Button key="submit" type="primary" onClick={handleReceiveItems} disabled={dataSource.length === 0}>
-                    Save
+                    Хадгалах
                 </Button>,
             ]}
             width={1000}
@@ -137,6 +146,12 @@ const ReceiveItemModal = ({ isModalVisible, handleCancel, setRefresh }) => {
                 layout="vertical"
                 onFinish={handleAddItem}
                 style={{ marginBottom: '16px' }}
+                initialValues={{
+                    customerName: defaultCustomerName,
+                    fiberColor: defaultFiberColor,
+                    fiberType: defaultFiberType,
+                    fiberMaterial: defaultMaterial,
+                }}
             >
                 <Row gutter={24}>
                     <Col span={12}>
@@ -165,6 +180,7 @@ const ReceiveItemModal = ({ isModalVisible, handleCancel, setRefresh }) => {
                             <Select
                                 placeholder="Харилцагч сонгоно уу"
                                 style={{ borderRadius: '8px' }}
+                                disabled={!!defaultCustomerName}
                             >
                                 {Array.isArray(customers) && customers.map(customer => (
                                     <Option key={customer.id} value={customer.name}>{customer.name}</Option>
@@ -199,6 +215,7 @@ const ReceiveItemModal = ({ isModalVisible, handleCancel, setRefresh }) => {
                             <Select
                                 placeholder="Төрөл сонгоно уу"
                                 style={{ borderRadius: '8px' }}
+                                disabled={!!defaultFiberType}
                             >
                                 {Array.isArray(fiberTypes) && fiberTypes.map(type => (
                                     <Option key={type.id} value={type.name}>{type.name}</Option>
@@ -263,7 +280,7 @@ const ReceiveItemModal = ({ isModalVisible, handleCancel, setRefresh }) => {
                     )}
                 </Row>
                 <Button type="dashed" htmlType="submit" icon={<PlusOutlined />} style={{ width: '100%' }}>
-                    Add to List
+                    Жагсаалтанд нэмэх
                 </Button>
             </Form>
             <Table

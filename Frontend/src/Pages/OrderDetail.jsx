@@ -5,11 +5,11 @@ import { CheckCircleOutlined, FilePdfOutlined, PlayCircleOutlined, PlusOutlined 
 import useOrderDetails from "../hooks/useOrderDetailss";
 import { inventoryColumns, processColumns, processIOColumns, processLogColumns } from "../Components/OrderDetails/Columns";
 import StepsComponent from "../Components/OrderDetails/Steps";
-import ReceiveItemModal from "../Components/Inventory/ReceiveItemModal";
+import ReceiveItemModal from "../Components/Modals/ReceiveItemModal";
 import Header from "../Components/OrderDetails/Header";
 import OrderInfo from "../Components/OrderDetails/OrderInfo";
-import StartProcessModa from "../Components/OrderDetails/StartProcessModa";
-import EndProcessModa from "../Components/OrderDetails/EndProcessModa";
+import StartProcessModal from "../Components/Modals/StartProcessModal";
+import EndProcessModal from "../Components/Modals/EndProcessModal";
 import InputOutputCard from "../Components/OrderDetails/InputOutputCard";
 import { processService } from "../Services/process.service";
 import { reportService } from "../Services/report.service";
@@ -331,7 +331,7 @@ const OrderDetailsLayout = () => {
         </button>
       )}
 
-      <StartProcessModa
+      <StartProcessModal
         isModalVisible={startProcessModalVisible}
         onCancel={() => setStartProcessModalVisible(false)}
         orderDetails={orderDetails}
@@ -341,7 +341,7 @@ const OrderDetailsLayout = () => {
         onSuccess={handleStartProcessSuccess}
       />
 
-      <EndProcessModa
+      <EndProcessModal
         isModalVisible={endProcessModalVisible}
         onCancel={() => setEndProcessModalVisible(false)}
         orderDetails={orderDetails}

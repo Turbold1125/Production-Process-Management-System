@@ -7,7 +7,7 @@ import { constantsService } from "../../Services/constants.service";
 const { Title } = Typography;
 const { Option } = Select;
 
-const EndProcessModa = ({
+const EndProcessModal = ({
     isModalVisible, onCancel, orderDetails, selectedProcess, onSuccess
 }) => {
     const { currentUser } = useContext(UserContext);
@@ -185,4 +185,4 @@ const EndProcessModa = ({
     )
 }
 
-export default EndProcessModa;
+export default EndProcessModal;

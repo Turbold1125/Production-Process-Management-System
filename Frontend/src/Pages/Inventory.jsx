@@ -3,11 +3,11 @@ import { Table, Button, Form, Input, message, Select, Row, Col, Card, Typography
 import { PlusOutlined, SearchOutlined, ExportOutlined, BarChartOutlined, } from '@ant-design/icons';
 import { useMaterials } from '../hooks/useMaterials';
 import { inventoryColumns, logColumns } from '../Components/Inventory/Columns';
-import ReceiveItemModal from '../Components/Inventory/ReceiveItemModal';
-import DeliverItemsModal from '../Components/Inventory/DeliverItemModal';
+import ReceiveItemModal from '../Components/Modals/ReceiveItemModal';
 import DeliveredItemsTable from '../Components/Inventory/DeliveredItemsTable';
 import { inventoryService } from '../Services/Inventory.service';
 import { deliveryService } from '../Services/delivery.service';
+import DeliverItemsModal from '../Components/Modals/DeliverItemModal';
 
 const { Option } = Select;
 const { Title, Text } = Typography;

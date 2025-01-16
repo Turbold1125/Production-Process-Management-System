@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Modal, Select, Button, message, Table } from "antd";
+import { Modal, Select, message, Table } from "antd";
 
 const { Option } = Select;
 
@@ -29,7 +29,7 @@ const DeliverItemsModal = ({ visible, onCancel, inventories, onDeliver }) => {
     }
   
     try {
-      const response = await onDeliver({
+      await onDeliver({
         customerName: selectedCustomer,
         inventoryIds: selectedInventories,
         deliverAll: false,

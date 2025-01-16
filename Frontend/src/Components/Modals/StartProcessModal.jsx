@@ -1,12 +1,12 @@
 import React, { useContext, useState } from "react";
 import { Modal, Table, Typography, message } from "antd";
-import { inventoryColumns } from "./Columns";
+import { inventoryColumns } from "../OrderDetails/Columns";
 import { UserContext } from "../../Context/userContext";
 import { processService } from "../../Services/process.service";
 
 const { Title } = Typography;
 
-const StartProcessModa = ({
+const StartProcessModal = ({
     isModalVisible,
     onCancel,
     selectedFibers,
@@ -89,4 +89,4 @@ const StartProcessModa = ({
     )
 }
 
-export default StartProcessModa;
+export default StartProcessModal;

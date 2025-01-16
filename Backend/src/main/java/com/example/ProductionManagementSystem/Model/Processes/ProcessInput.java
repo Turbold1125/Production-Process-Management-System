@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 
 @Data
 @Entity
-@Table(name = "process_inputs")
+@Table(name = "process_input")
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProcessInput {
@@ -56,7 +56,7 @@ public class ProcessInput {
         this.color = inventory.getFiberColor();
         this.inventoryId = fiber.getInventoryId();
         this.customerName = customerName;
-        this.dateTime = inventory.getDateTime();
+        this.dateTime =  LocalDateTime.now();
     }
 }
 

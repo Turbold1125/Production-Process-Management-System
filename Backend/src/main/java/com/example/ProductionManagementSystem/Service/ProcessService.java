@@ -118,11 +118,17 @@
         public Inventory endProcess(EndProcessRequest request) throws ServiceException {
     
             if (request.getProcessId() == null) {
-                throw new IllegalArgumentException("Process ID cannot be null.");
+                throw new ServiceException(ErrorResponse.NO_PROCESS);
             }
     
             Process process = processRepository.findById(request.getProcessId())
                     .orElseThrow(() -> new RuntimeException("Process not found."));
+
+            FactoryProcess factoryProcess = factoryProcessRepository.findByName(process.getProcessName());
+
+            if (factoryProcess == null || factoryProcess.getOutputs() == null) {
+                throw new IllegalArgumentException("Output material not configured for this process.");
+            }
     
             User user = userService.getUserById(request.getUserId());
     
@@ -134,17 +140,12 @@
             process.setUserId(request.getUserId());
             process.setUsername(user.getUsername());
             process.setOutputMaterialWeight(request.getOutputWeight());
-            process.setOutputMaterial(request.getOutputMaterial());
             process.setOutputMaterialColor(request.getOutputColor());
             processRepository.save(process);
     
             logProcessAction(process, Status.COMPLETED.name(), request.getUserId(), user.getUsername());
-
-            if (request.getOutputMaterial() == null || request.getOutputMaterial().isEmpty()) {
-                throw new IllegalArgumentException("Output material cannot be null or empty.");
-            }
     
-            Inventory outputInventory = inventoryService.createProcessedInventory(request.getOutputMaterial(), request.getOutputColor(), request.getOutputWeight(), process.getCustomerName(), request.getFiberType());
+            Inventory outputInventory = inventoryService.createProcessedInventory(process.getOutputMaterial(), request.getOutputColor(), request.getOutputWeight(), process.getCustomerName(), request.getFiberType());
     
             processOutputService.logPrimaryOutput(process, outputInventory, OutputType.PRIMARY);
     

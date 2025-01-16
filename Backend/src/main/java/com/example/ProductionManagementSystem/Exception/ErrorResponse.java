@@ -43,7 +43,7 @@ public class ErrorResponse {
     public static final ErrorResponse IN_PROGRESS =  new ErrorResponse(HttpStatus.BAD_REQUEST, "S031", "Процессийг эхлүүлсэн байна.");
     public static final ErrorResponse NO_INVENTORY_TO_DELIVER = new ErrorResponse(HttpStatus.BAD_REQUEST, "S032", "Хүлээлгэн өгөх түүхий эд олдсонгүй");
     public static final ErrorResponse NO_INVENTORY_SELECTED = new ErrorResponse(HttpStatus.BAD_REQUEST, "S033", "Хүлээлгэн өгөх түүхий эд сонгоогүй байна.");
-
+    public static final ErrorResponse OUTPUT_MATERIAL_NOT_CONFIGURED = new ErrorResponse(HttpStatus.BAD_REQUEST, "S034", "Процессд гаралтын материал тохируулагдаагүй байна.");
 
     @JsonIgnore
     private HttpStatusCode status;

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, Descriptions, Tag } from 'antd';
+import { Card, Descriptions } from 'antd';
 import { formatDate } from '../../Utils/DateFormat';
 
 const OrderInfo = ({ orderDetails, getStatusTag }) => {

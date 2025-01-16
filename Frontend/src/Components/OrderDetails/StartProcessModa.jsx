@@ -1,11 +1,17 @@
 import React, { useContext, useState } from "react";
-import { Modal, Table, Input, Select, message } from "antd";
+import { Modal, Table, message } from "antd";
 import { inventoryColumns } from "./Columns";
 import { UserContext } from "../../Context/userContext";
 import { processService } from "../../Services/process.service";
 
 const StartProcessModa = ({
-    selectedFibers, visible, setSelectedFibers, onCancel, selectedProcess, orderDetails
+    isModalVisible,
+    onCancel,
+    selectedFibers,
+    setSelectedFibers,
+    selectedProcess,
+    orderDetails,
+    onSuccess
 }) => {
 
 
@@ -16,6 +22,7 @@ const StartProcessModa = ({
     );
 
     const handleStartProcess = async () => {
+        const messageKey = "startProcess";
         if (selectedFibers.length === 0) {
             message.error("All necessary fields must be provided.");
             return;
@@ -33,17 +40,28 @@ const StartProcessModa = ({
             })),
         };
         try {
+            message.loading({ content: "Starting process...", key: messageKey, duration: 1});
             await processService.startProcess(payload);
-            message.success("Process started successfully!", selectedProcess.processName);
+            message.success({
+                content: `Process "${selectedProcess.processName}" started successfully!`,
+                key: messageKey,
+                duration: 2,
+            });
+            console.log()
+            onSuccess();
         } catch (error) {
-            message.error(error.response?.data?.message);
+            message.error({
+                content: error.response?.data?.message || "Failed to start process.",
+                key: messageKey,
+                duration: 2,
+            });
         }
     }
 
     return (
         <Modal
             title="Start Process"
-            visible={visible}
+            visible={isModalVisible}
             onCancel={onCancel}
             onOk={handleStartProcess}
             width={800}

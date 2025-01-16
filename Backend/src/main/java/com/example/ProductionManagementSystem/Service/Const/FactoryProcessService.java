@@ -63,4 +63,14 @@ public class FactoryProcessService {
 
         return factoryProcessRepository.save(existingFactoryProcess);
     }
+
+    public String getOutputMaterialForProcess(String processName) throws ServiceException {
+        FactoryProcess process = factoryProcessRepository.findByName(processName);
+
+        if (process == null || process.getOutputs() == null || process.getOutputs().isEmpty()) {
+            throw new ServiceException(ErrorResponse.OUTPUT_MATERIAL_NOT_CONFIGURED);
+        }
+
+        return process.getOutputs();
+    }
 }

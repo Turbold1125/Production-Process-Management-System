@@ -49,7 +49,9 @@ const useOrderDetailss = (orderId) => {
     setError(null);
 
     try {
-      const response = await axios.get(`${API_BASE_URL}/processes/log/${orderId}`);
+      const response = await axios.get(`${API_BASE_URL}/processes/logs`, {
+        params: { orderId}
+      });
       setProcessLogs(response.data);
     } catch (err) {
       setError("Failed to fetch process logs.");
@@ -64,7 +66,9 @@ const useOrderDetailss = (orderId) => {
     setError(null);
 
     try {
-      const response = await axios.get(`${API_BASE_URL}/processes/processInputs/${orderId}`);
+      const response = await axios.get(`${API_BASE_URL}/processes/processInputs`, {
+        params: { orderId },
+      });
       setProcessInputs(response.data);
     } catch (err) {
       setError("Failed to fetch process inputs.");
@@ -79,7 +83,9 @@ const useOrderDetailss = (orderId) => {
     setError(null);
 
     try {
-      const response = await axios.get(`${API_BASE_URL}/processes/processOutputs/${orderId}`);
+      const response = await axios.get(`${API_BASE_URL}/processes/processOutputs`, {
+        params: { orderId },
+      });
       setProcessOutputs(response.data);
     } catch (err) {
       setError("Failed to fetch process outputs.");

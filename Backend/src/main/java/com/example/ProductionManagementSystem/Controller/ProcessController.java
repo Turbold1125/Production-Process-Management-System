@@ -89,8 +89,8 @@ public class ProcessController implements ProcessApi {
         return processService.getAllProcessLogs();
     }
 
-    @GetMapping("/log/{orderId}")
-    public List<ProcessLog> getProcessLogsForOrder(@PathVariable Integer orderId) {
+    @GetMapping("/logs")
+    public List<ProcessLog> getProcessLogsForOrder(@RequestParam Integer orderId) {
         return processService.getProcessLogsForOrder(orderId);
     }
 
@@ -109,13 +109,13 @@ public class ProcessController implements ProcessApi {
         return processService.getProcessesByStatus(status);
     }
 
-    @GetMapping("/processOutputs/{orderId}")
-    public List<ProcessOutput> getProcessOutputs(@PathVariable Integer orderId) {
+    @GetMapping("/processOutputs")
+    public List<ProcessOutput> getProcessOutputs(@RequestParam Integer orderId) {
         return processOutputService.getProcessOutputsByOrderId(orderId);
     }
 
-    @GetMapping("/processInputs/{orderId}")
-    public List<ProcessInput> getProcessInputs(@PathVariable Integer orderId) {
+    @GetMapping("/processInputs")
+    public List<ProcessInput> getProcessInputs(@RequestParam Integer orderId) {
         return processOutputService.getProcessInputsByOrderId(orderId);
     }
 }

@@ -8,7 +8,6 @@ import java.util.List;
 public class EndProcessRequest {
     private Integer processId;
     private Integer userId;
-    private String outputMaterial;
     private Double outputWeight;
     private String outputColor;
     private String fiberType;

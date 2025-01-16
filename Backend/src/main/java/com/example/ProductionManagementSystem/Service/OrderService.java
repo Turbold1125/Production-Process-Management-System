@@ -105,6 +105,7 @@ public class OrderService {
             Process process = new Process();
             process.setOrderId(savedOrder.getId());
             process.setProcessName(factoryProcess.getName());
+            process.setOutputMaterial(factoryProcess.getOutputs());
             process.setCustomerName(savedOrder.getCustomerName());
             process.setStatus(ProcessStatus.NEW);
             processRepository.save(process);

@@ -3,6 +3,7 @@ import { Typography, Modal, Form, Select, Input, Button, Table, message, Row, Co
 import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
 import { constantsService } from '../../Services/constants.service';
 import { inventoryService } from '../../Services/Inventory.service';
+import { selectedItemsColumns } from '../Inventory/Columns';
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -99,28 +100,6 @@ const ReceiveItemModal = ({
             message.error('Error receiving items.');
         }
     };
-
-    const columns = [
-        { title: 'Түүхий эдийн төрөл', dataIndex: 'fiberMaterial', key: 'fiberMaterial' },
-        { title: 'Харилцагч', dataIndex: 'customerName', key: 'customerName' },
-        { title: 'Өнгө', dataIndex: 'fiberColor', key: 'fiberColor' },
-        { title: 'Төрөл', dataIndex: 'fiberType', key: 'fiberType' },
-        { title: 'Бохир жин (кг)', dataIndex: 'roughWeight', key: 'roughWeight' },
-        { title: 'Шуудайны жин (кг)', dataIndex: 'baleWeight', key: 'baleWeight' },
-        { title: 'Бобины жин (кг)', dataIndex: 'bobbinWeight', key: 'bobbinWeight' },
-        { title: 'Бобины дугаар', dataIndex: 'bobbinNum', key: 'bobbinNum' },
-        {
-            title: 'Үйлдэл',
-            key: 'actions',
-            render: (_, record) => (
-                <Button
-                    danger
-                    icon={<DeleteOutlined />}
-                    onClick={() => handleDeleteRow(record.key)}
-                />
-            ),
-        },
-    ];
 
     return (
         <Modal
@@ -285,7 +264,7 @@ const ReceiveItemModal = ({
             </Form>
             <Table
                 dataSource={dataSource}
-                columns={columns}
+                columns={selectedItemsColumns(handleDeleteRow)}
                 pagination={false}
                 rowKey="key"
                 bordered

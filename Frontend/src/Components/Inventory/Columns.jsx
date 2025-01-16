@@ -1,8 +1,8 @@
 import React from 'react';
-import { Tag } from 'antd';
+import { Tag, Button } from 'antd';
 import { formatDate } from '../../Utils/DateFormat';
 import { FiberColorMap } from '../../Constants/Constants';
-
+import { DeleteOutlined } from '@ant-design/icons';
 
 const processTagColors = {
   Будах: "blue",
@@ -14,6 +14,28 @@ const processTagColors = {
   Мушгих: "gold",
   CREATE: "lime"
 };
+
+export const selectedItemsColumns = (deleteRow) => [
+  { title: 'Түүхий эдийн төрөл', dataIndex: 'fiberMaterial', key: 'fiberMaterial' },
+  { title: 'Харилцагч', dataIndex: 'customerName', key: 'customerName' },
+  { title: 'Өнгө', dataIndex: 'fiberColor', key: 'fiberColor' },
+  { title: 'Төрөл', dataIndex: 'fiberType', key: 'fiberType' },
+  { title: 'Бохир жин (кг)', dataIndex: 'roughWeight', key: 'roughWeight' },
+  { title: 'Шуудайны жин (кг)', dataIndex: 'baleWeight', key: 'baleWeight' },
+  { title: 'Бобины жин (кг)', dataIndex: 'bobbinWeight', key: 'bobbinWeight' },
+  { title: 'Бобины дугаар', dataIndex: 'bobbinNum', key: 'bobbinNum' },
+  {
+    title: 'Үйлдэл',
+    key: 'actions',
+    render: (_, record) => (
+      <Button
+        danger
+        icon={<DeleteOutlined />}
+        onClick={() => deleteRow(record.key)}
+      />
+    ),
+  },
+];
 
 export const inventoryColumns = (data) => [
   {

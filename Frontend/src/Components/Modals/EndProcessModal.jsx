@@ -23,16 +23,6 @@ const EndProcessModal = ({
         if (isModalVisible) {
             fetchFiberColors();
             initializeWasteData();
-            if (orderDetails?.factoryProcesses) {
-                console.log(orderDetails)
-                const outputs = orderDetails.factoryProcesses.map((process) => process.outputs);
-                console.log("Outputs from factoryProcesses:", outputs);
-                console.log("Output have")
-
-                console.log("Selected process", selectedProcess)
-            } else {
-                console.log("No factoryProcesses found in orderDetails.");
-            }
         }
     }, [isModalVisible]);
 

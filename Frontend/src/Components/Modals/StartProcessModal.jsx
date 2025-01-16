@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import { Modal, Table, Typography, message } from "antd";
 import { inventoryColumns } from "../OrderDetails/Columns";
 import { UserContext } from "../../Context/userContext";
@@ -15,7 +15,6 @@ const StartProcessModal = ({
     orderDetails,
     onSuccess
 }) => {
-
 
     const { currentUser } = useContext(UserContext);
     const totalInputWeight = selectedFibers.reduce(

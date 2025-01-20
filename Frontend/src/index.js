@@ -12,6 +12,7 @@ import OrderDetail from './Pages/OrderDetail';
 import ConstantsManager from './Pages/Constants';
 import UserProvider from './Context/userContext';
 import AdminRoute from './Context/AdminRoute';
+import ReportTemplate from './Pages/ReportTemplate';
 
 const router = createBrowserRouter([
   {
@@ -32,6 +33,7 @@ const router = createBrowserRouter([
           </AdminRoute>
         ),
       },
+      { path: "pdf", element: <ReportTemplate />},
     ]
   }
 ]);

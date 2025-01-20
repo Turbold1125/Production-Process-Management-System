@@ -52,7 +52,9 @@ public class UserService {
 
         existingUser.setEmail(user.getEmail());
         existingUser.setUsername(user.getUsername());
-        existingUser.setPassword(passwordEncoder.encode(user.getPassword()));
+        if (!passwordEncoder.matches(user.getPassword(), existingUser.getPassword())) {
+            existingUser.setPassword(passwordEncoder.encode(user.getPassword()));
+        }
         existingUser.setRole(user.getRole());
 
         return userRepository.save(existingUser);

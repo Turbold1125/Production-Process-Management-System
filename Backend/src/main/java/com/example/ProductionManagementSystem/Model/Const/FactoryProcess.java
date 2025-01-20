@@ -37,4 +37,7 @@ public class FactoryProcess {
 
     @Column(name = "waste")
     private String waste;
+
+    @Column(name = "required_lot")
+    private  Boolean requiredLot = false;
 }

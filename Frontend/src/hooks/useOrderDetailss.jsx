@@ -99,8 +99,8 @@ const useOrderDetailss = (orderId) => {
       fetchOrderById(orderId);
       fetchProcesses();
       fetchProcessLogs();
-      fetchProcessInputs(); // Fetch process inputs
-      fetchProcessOutputs(); // Fetch process outputs
+      fetchProcessInputs();
+      fetchProcessOutputs(); 
     }
   }, [orderId, fetchOrderById, fetchProcesses, fetchProcessLogs, fetchProcessInputs, fetchProcessOutputs]);
 

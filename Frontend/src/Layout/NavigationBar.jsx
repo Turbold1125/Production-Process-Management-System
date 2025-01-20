@@ -32,6 +32,7 @@ const NavMenu = () => {
     { name: "Захиалга", path: "/orders", icon: <OrderedListOutlined />, roles: ["ADMIN", "USER"] },
     { name: "Агуулах", path: "/inventory", icon: <AppstoreOutlined />, roles: ["ADMIN", "USER"] },
     { name: "Утгууд", path: "/constants", icon: <SettingOutlined />, roles: ["ADMIN"] },
+    { name: "PDF", path: "/pdf", icon: <SettingOutlined />, roles: ["ADMIN"] },
   ];
 
   const filteredMenuItems = currentUser

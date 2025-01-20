@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Typography, Modal, Form, Select, Input, Button, Table, message, Row, Col } from 'antd';
-import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
+import { PlusOutlined } from '@ant-design/icons';
 import { constantsService } from '../../Services/constants.service';
 import { inventoryService } from '../../Services/Inventory.service';
 import { selectedItemsColumns } from '../Inventory/Columns';
@@ -32,7 +32,8 @@ const ReceiveItemModal = ({
             fetchModalData();
             console.log(`defaultCustomerName: ${defaultCustomerName}, defaultFiberColor: ${defaultFiberColor}, defaultFiberType: ${defaultFiberType}, defaultMaterial: ${defaultMaterial}`);
         }
-    }, [isModalVisible]);
+    }, [isModalVisible, defaultCustomerName, defaultFiberColor, defaultFiberType, defaultMaterial]);
+
 
     const fetchModalData = async () => {
         try {
@@ -52,6 +53,12 @@ const ReceiveItemModal = ({
     };
 
     const handleAddItem = (values) => {
+    
+        if (values.baleWeight >= values.roughWeight) {
+            message.error('Шуудайны жин бохир жингээс их байж болохгүй!');
+            return;
+        }
+        
         const newItem = {
             key: Date.now(),
             ...values,
@@ -76,21 +83,19 @@ const ReceiveItemModal = ({
 
     const handleReceiveItems = async () => {
         try {
-            await Promise.all(
-                dataSource.map(async (item) => {
-                    const requestBody = {
-                        fiberMaterial: item.fiberMaterial,
-                        customerName: item.customerName,
-                        fiberColor: item.fiberColor,
-                        fiberType: item.fiberType,
-                        roughWeight: item.roughWeight,
-                        baleWeight: item.baleWeight || null,
-                        bobbinWeight: item.bobbinWeight || null,
-                        bobbinNum: item.bobbinNum || null,
-                    };
-                    return inventoryService.createInventory(requestBody);
-                })
-            );
+
+            const requestBody = dataSource.map(item => ({
+                fiberMaterial: item.fiberMaterial,
+                customerName: item.customerName,
+                fiberColor: item.fiberColor,
+                fiberType: item.fiberType,
+                roughWeight: item.roughWeight,
+                baleWeight: item.baleWeight || null,
+                bobbinWeight: item.bobbinWeight || null,
+                bobbinNum: item.bobbinNum || null,
+            }));
+
+            await inventoryService.createInventory(requestBody);
             message.success('Items received successfully!');
             setRefresh(true);
             setDataSource([]);
@@ -161,7 +166,7 @@ const ReceiveItemModal = ({
                                 style={{ borderRadius: '8px' }}
                                 disabled={!!defaultCustomerName}
                             >
-                                {Array.isArray(customers) && customers.map(customer => (
+                                {customers.map(customer => (
                                     <Option key={customer.id} value={customer.name}>{customer.name}</Option>
                                 ))}
                             </Select>
@@ -179,7 +184,7 @@ const ReceiveItemModal = ({
                                 placeholder="Өнгө сонгоно уу"
                                 style={{ borderRadius: '8px' }}
                             >
-                                {Array.isArray(fiberColors) && fiberColors.map(fiberColor => (
+                                {fiberColors.map(fiberColor => (
                                     <Option key={fiberColor.id} value={fiberColor.name}>{fiberColor.name}</Option>
                                 ))}
                             </Select>
@@ -196,7 +201,7 @@ const ReceiveItemModal = ({
                                 style={{ borderRadius: '8px' }}
                                 disabled={!!defaultFiberType}
                             >
-                                {Array.isArray(fiberTypes) && fiberTypes.map(type => (
+                                {fiberTypes.map(type => (
                                     <Option key={type.id} value={type.name}>{type.name}</Option>
                                 ))}
                             </Select>

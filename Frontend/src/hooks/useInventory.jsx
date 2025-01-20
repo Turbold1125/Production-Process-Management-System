@@ -1,92 +1,101 @@
 import { useState, useEffect, useCallback } from 'react';
-import axios from 'axios';
-
-const API_BASE_URL = 'http://localhost:8080/api';
-
-const handleError = (error) => {
-    console.error('API call error:', error);
-    if (error.response && error.response.data && error.response.data.message) {
-        throw new Error(error.response.data.message);
-    } else {
-        throw new Error('An unexpected error occurred');
-    }
-};
+import { inventoryService } from '../Services/Inventory.service';
+import { message } from 'antd';
 
 export const useInventory = () => {
     const [inventoryData, setInventoryData] = useState([]);
     const [logData, setLogData] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
+    const [searchPerformed, setSearchPerformed] = useState(false);
 
     const fetchInventoryData = useCallback(async () => {
+        setIsLoading(true);
         try {
-            const response = await axios.get(`${API_BASE_URL}/inventory/all`);
-            setInventoryData(response.data);
+            const data = await inventoryService.fetchAllinventory();
+            setInventoryData(data);
         } catch (error) {
-            handleError(error);
+            message.error(error.message);
+        } finally {
+            setIsLoading(false);
         }
     }, []);
 
     const fetchInventoryLogs = useCallback(async () => {
         try {
-            const response = await axios.get(`${API_BASE_URL}/inventory/logs`);
-            setLogData(response.data);
+            const data = await inventoryService.fetchInventoryLogs();
+            setLogData(data);
         } catch (error) {
-            handleError(error);
+            message.error(error.message);
+        } finally {
+            setIsLoading(false);
         }
     }, []);
 
+    // const createInventory = async (data) => {
+    //     try {
+    //         const response = await axios.post(`${API_BASE_URL}/inventory/create`, data);
+    //         await fetchInventoryData();
+    //         await fetchInventoryLogs();
+    //         return response.data;
+    //     } catch (error) {
+    //         handleError(error);
+    //     }
+    // };
+
     const createInventory = async (data) => {
         try {
-            const response = await axios.post(`${API_BASE_URL}/inventory/create`, data);
-            // setInventoryData((prevInventory) => [...prevInventory, response.data]);
+            const response = await inventoryService.createInventory(data);
             await fetchInventoryData();
             await fetchInventoryLogs();
-            return response.data;
+            return response;
         } catch (error) {
-            handleError(error);
+            message.error(error.message);
         }
     };
 
     const searchInventory = async (customerName, fiberMaterial) => {
+        setIsLoading(true);
         try {
-            const response = await axios.get(`${API_BASE_URL}/inventory/search`, {
-                params: { customerName, fiberMaterial },
-            });
-            setInventoryData(response.data);
-            return response.data;
+            const data = await inventoryService.searchInventory(customerName, fiberMaterial);
+            setInventoryData(data);
+            setSearchPerformed(true);
         } catch (error) {
-            handleError(error);
+            message.error(error.message);
+        } finally {
+            setIsLoading(false);
         }
     };
-    
+
     const filterInventory = async (customer, material, color, fiberType) => {
+        setIsLoading(true);
         try {
-            const response = await axios.get(`${API_BASE_URL}/inventory/filter`, {
-                params: { customer, material, color, fiberType },
-            });
-            setInventoryData(response.data);
-            return response.data;
+            const data = await inventoryService.filterInventory(customer, material, color, fiberType);
+            setInventoryData(data);
         } catch (error) {
-            handleError(error);
+            message.error(error.message);
+        } finally {
+            setIsLoading(false);
         }
     };
     
+    const refreshInventoryData = useCallback(async () => {
+        await Promise.all([fetchInventoryData(), fetchInventoryLogs()]);
+    }, [fetchInventoryData, fetchInventoryLogs]);
+
     useEffect(() => {
-        const fetchData = async () => {
-          try {
-            await fetchInventoryData();
-            await fetchInventoryLogs();
-          } catch (error) {
-            handleError(error, 'Error fetching initial data');
-          }
-        };
-        fetchData();
-      }, [fetchInventoryData, fetchInventoryLogs]);
+        refreshInventoryData();
+    }, [refreshInventoryData]);
 
     return {
         inventoryData,
         logData,
+        isLoading,
+        searchPerformed,
+        fetchInventoryData,
+        fetchInventoryLogs,
         createInventory,
         searchInventory,
-        filterInventory
+        filterInventory,
+        refreshInventoryData,
     };
 };

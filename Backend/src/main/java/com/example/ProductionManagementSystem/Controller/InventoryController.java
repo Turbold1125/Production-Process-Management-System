@@ -18,7 +18,7 @@ public class InventoryController implements InventoryApi {
     private final InventoryService inventoryService;
 
     @PostMapping("/create")
-    public Inventory createInventory(@RequestBody Inventory inventoryData) {
+    public List<Inventory> createInventory(@RequestBody List<Inventory> inventoryData) throws ServiceException{
         return inventoryService.createInventory(inventoryData);
     }
 
@@ -28,9 +28,9 @@ public class InventoryController implements InventoryApi {
     }
 
     @GetMapping("/search")
-    public List<Inventory> searchItems(
+    public List<Inventory> searchItems (
             @RequestParam(required = false) String customerName,
-            @RequestParam(required = false) String fiberMaterial) {
+            @RequestParam(required = false) String fiberMaterial) throws ServiceException{
         return inventoryService.searchItems(customerName, fiberMaterial);
     }
 

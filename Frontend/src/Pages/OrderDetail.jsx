@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Card, Typography, Button, Row, Col, Table, Spin, Alert, message, Tabs, Tag, Form } from "antd";
+import { Card, Button, Row, Col, Table, Spin, Alert, message, Tabs, Tag } from "antd";
 import { CheckCircleOutlined, FilePdfOutlined, PlayCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import useOrderDetails from "../hooks/useOrderDetailss";
 import { inventoryColumns, processColumns, processIOColumns, processLogColumns } from "../Components/OrderDetails/Columns";
@@ -47,7 +47,6 @@ const OrderDetailsLayout = () => {
 
   const [processes, setProcesses] = useState([]);
   const [selectedProcessIndex, setSelectedProcessIndex] = useState(0);
-  const [inventoryLoading, setInventoryLoading] = useState(false);
   const [selectedFibers, setSelectedFibers] = useState([]);
   const [startProcessModalVisible, setStartProcessModalVisible] = useState(false);
   const [filteredInventory, setFilteredInventory] = useState([]);
@@ -245,11 +244,7 @@ const OrderDetailsLayout = () => {
           <StepsComponent processes={processes} handleProcessClick={handleProcessClick} />
 
           {/* Inventory Table */}
-          {inventoryLoading ? (
-            <div className="text-center py-8">
-              <Spin size="large" />
-            </div>
-          ) : filteredInventory.length > 0 ? (
+          {filteredInventory.length > 0 ? (
             <div className="mb-5 p-5 bg-white rounded-lg shadow-lg">
               <div className="text-xl font-semibold mb-4 text-blue-600">{processes[selectedProcessIndex]?.processName} боломжтой түүхий эдийн мэдээлэл</div>
               <Table

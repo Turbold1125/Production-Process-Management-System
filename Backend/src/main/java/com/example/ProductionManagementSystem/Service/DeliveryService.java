@@ -30,6 +30,7 @@ public class DeliveryService {
     private final ProcessRepository processRepository;
     private final ProcessInputRepository processInputRepository;
     private final ProcessOutputRepository processOutputRepository;
+    private final InventoryService inventoryService;
 
 
     public List<Delivery> getDeliveriesByCustomer() {
@@ -62,18 +63,6 @@ public class DeliveryService {
             throw new ServiceException(ErrorResponse.NO_INVENTORY_SELECTED);
         }
 
-        // Filter only processed inventories
-//        List<Inventories> processedInventories = new ArrayList<>();
-//        for (Inventories inventory : inventories) {
-//            if (isProcessed(inventory)) {
-//                processedInventories.add(inventory);
-//            }
-//        }
-//
-//        if (processedInventories.isEmpty()) {
-//            throw new ServiceException(ErrorResponse.BAD_REQUEST);
-//        }
-
         // Create a new Delivery record
         Delivery delivery = new Delivery();
         delivery.setDeliveryType("INVENTORY");
@@ -93,6 +82,7 @@ public class DeliveryService {
             item.setFiberType(inventory.getFiberType());
             item.setFiberColor(inventory.getFiberColor());
             item.setDeliveredTime(LocalDateTime.now());
+
 
             deliverInventory(inventory);
             deliveryItems.add(item);
@@ -116,8 +106,7 @@ public class DeliveryService {
 
 
     private void deliverInventory(Inventory inventory) {
-        inventory.setRoughWeight(0);
-        inventory.setConWeight(0);
-        inventoryRepository.save(inventory);
+        inventoryService.logInventoryAction(inventory, "DELIVERED");
+        inventoryRepository.delete((inventory));
     }
 }

@@ -39,8 +39,8 @@ public interface InventoryApi {
             @SecurityRequirement(name = "Authorization")})
     @ApiResponse(responseCode = "200", description = "Үүсгэсэн", content = {
             @Content(schema = @Schema(implementation = Inventory.class)) })
-    Inventory createInventory(
-            @Parameter(required = true, description = "Агуулахын мэдээлэл") @RequestBody Inventory inventory) throws ServiceException;
+    List<Inventory> createInventory(
+            @Parameter(required = true, description = "Агуулахын мэдээлэл") @RequestBody List<Inventory> inventory) throws ServiceException;
 
     @Operation(summary = "Төрөл бүрийн талбараар агуулахын зүйлсийг хайх", security = @SecurityRequirement(name = "Authorization"))
     @ApiResponse(responseCode = "200", description = "Амжилттай", content = @Content(schema = @Schema(implementation = Inventory.class)))

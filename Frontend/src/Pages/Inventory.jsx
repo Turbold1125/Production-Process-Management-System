@@ -5,9 +5,9 @@ import { useMaterials } from '../hooks/useMaterials';
 import { inventoryColumns, logColumns } from '../Components/Inventory/Columns';
 import ReceiveItemModal from '../Components/Modals/ReceiveItemModal';
 import DeliveredItemsTable from '../Components/Inventory/DeliveredItemsTable';
-import { inventoryService } from '../Services/Inventory.service';
 import { deliveryService } from '../Services/delivery.service';
 import DeliverItemsModal from '../Components/Modals/DeliverItemModal';
+import { useInventory } from '../hooks/useInventory';
 
 const { Option } = Select;
 const { Title, Text } = Typography;
@@ -19,47 +19,23 @@ const Inventory = () => {
   const [searchText, setSearchText] = useState('');
   const [filterType, setFilterType] = useState('');
   const [totalWeight, setTotalWeight] = useState(0);
-  const [searchPerformed, setSearchPerformed] = useState(false);
   const [showSummary, setShowSummary] = useState(false);
   const [isShipModalVisible, setIsShipModalVisible] = useState(false);
-  const [baseTotalWeight, setBaseTotalWeight] = useState(0);
-  const [selectedCustomer, setSelectedCustomer] = useState("");
+  const [baseTotalWeight] = useState(0);
+  const [selectedCustomer] = useState("");
   const [deliveredData, setDeliveredData] = useState([]);
-  const [inventoryData, setInventoryData] = useState([]);
-  const [logData, setLogData] = useState([]);
-  const [isRefresh, setRefresh] = useState(false);
 
-  const fetchInventoryData = async () => {
-    try {
-      const data = await inventoryService.fetchAllinventory();
-      setInventoryData(data);
-    } catch (error) {
-      message.error('Error fetching inventory data');
-    }
-  };
-  
-  const fetchInventoryLogs = async () => {
-    try {
-      const data = await inventoryService.fetchInventoryLogs();
-      setLogData(data);
-    } catch (error) {
-      message.error('Error fetching inventory logs');
-    }
-  };
-  
+  const {
+    inventoryData,
+    logData,
+    searchPerformed,
+    searchInventory,
+    refreshInventoryData,
+  } = useInventory();
+
   useEffect(() => {
-    if (isRefresh) {
-      fetchInventoryData();
-      fetchInventoryLogs();
-      setRefresh(false);
-    }
-  }, [isRefresh]);
-  
-  useEffect(() => {
-    fetchInventoryData();
-    fetchInventoryLogs();
     fetchDeliveredItems();
-  }, []);
+  }, [])
 
   const handleOpenShipModal = () => {
     setIsShipModalVisible(true);
@@ -81,7 +57,7 @@ const Inventory = () => {
 
   const handleDeliver = async (request) => {
     try {
-      const data = await deliveryService.deliverInventory(request);
+      await deliveryService.deliverInventory(request);
       message.success('Амжилттай хүлээлгэн өглөө');
       fetchDeliveredItems();
       setIsShipModalVisible(false);
@@ -106,15 +82,9 @@ const Inventory = () => {
     setIsModalVisible(false);
     form.resetFields();
   };
-  
+
   const handleSearch = async () => {
-    try {
-      const data = await inventoryService.searchInventory(searchText, filterType);
-      setInventoryData(data);
-      setSearchPerformed(true);
-    } catch (error) {
-      message.error('Search failed');
-    }
+    await searchInventory(searchText, filterType)
   };
 
   const handleShowSummary = () => {
@@ -334,7 +304,7 @@ const Inventory = () => {
       <ReceiveItemModal
         isModalVisible={isModalVisible}
         handleCancel={handleCancel}
-        setRefresh={setRefresh}
+        setRefresh={refreshInventoryData}
       />
 
       <Modal

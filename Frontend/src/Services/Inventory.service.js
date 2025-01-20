@@ -1,39 +1,49 @@
-import axios from 'axios';
+import axios from "axios";
 
-const API_BASE_URL = 'http://localhost:8080/api';
+const API_BASE_URL = "http://localhost:8080/api";
 
+const handleRequest = async (apiCall) => {
+  try {
+    const response = await apiCall();
+    return response.data;
+  } catch (error) {
+    if (error.response && error.response.data && error.response.data.message) {
+      
+      throw new Error(error.response.data.message);
+    } else {
+      throw new Error("An error occurred. Please try again.");
+    }
+  }
+};
 
 const fetchAllinventory = async () => {
-  const response = await axios.get(`${API_BASE_URL}/inventory/all`);
-  return response.data;
+  return handleRequest(() => axios.get(`${API_BASE_URL}/inventory/all`));
 };
-
 
 const fetchInventoryLogs = async () => {
-  const response = await axios.get(`${API_BASE_URL}/inventory/logs`);
-  return response.data;
+  return handleRequest(() => axios.get(`${API_BASE_URL}/inventory/logs`));
 };
-
 
 const createInventory = async (data) => {
-  const response = await axios.post(`${API_BASE_URL}/inventory/create`, data);
-  return response.data;
+  return handleRequest(() =>
+    axios.post(`${API_BASE_URL}/inventory/create`, data)
+  );
 };
-
 
 const searchInventory = async (customerName, fiberMaterial) => {
-  const response = await axios.get(`${API_BASE_URL}/inventory/search`, {
-    params: { customerName, fiberMaterial },
-  });
-  return response.data;
+  return handleRequest(() =>
+    axios.get(`${API_BASE_URL}/inventory/search`, {
+      params: { customerName, fiberMaterial },
+    })
+  );
 };
 
-
 const filterInventory = async (customer, material, color, fiberType) => {
-  const response = await axios.get(`${API_BASE_URL}/inventory/filter`, {
-    params: { customer, material, color, fiberType },
-  });
-  return response.data;
+  return handleRequest(() =>
+    axios.get(`${API_BASE_URL}/inventory/filter`, {
+      params: { customer, material, color, fiberType },
+    })
+  );
 };
 
 export const inventoryService = {

@@ -27,6 +27,11 @@ const DeliverItemsModal = ({ visible, onCancel, inventories, onDeliver }) => {
       message.error("Хэрэглэгч сонгоно уу.");
       return;
     }
+    
+    if (selectedInventories.length === 0) {
+      message.warning("Түүхий эд сонгоно уу.");
+      return;
+    }
   
     try {
       await onDeliver({
@@ -76,7 +81,9 @@ const DeliverItemsModal = ({ visible, onCancel, inventories, onDeliver }) => {
         }}
         columns={[
           { title: "Дугаар", dataIndex: "id", key: "id" },
+          { title: "Харилцагч", dataIndex: "customerName", key: "customerName" },
           { title: "Материал", dataIndex: "fiberMaterial", key: "fiberMaterial" },
+          { title: "Шуудай", dataIndex: "baleNum", key: "baleNum"},
           { title: "Жин", dataIndex: "conWeight", key: "conWeight" },
           { title: "Огноо", dataIndex: "dateTime", key: "dateTime" },
         ]}

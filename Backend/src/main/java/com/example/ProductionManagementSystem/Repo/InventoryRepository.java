@@ -17,13 +17,17 @@ public interface InventoryRepository extends JpaRepository<Inventory, Integer> {
             @Param("customerName") String customerName,
             @Param("fiberMaterial") String fiberMaterial);
 
-    List<Inventory> findByCustomerNameContaining(String customerName);
-
-    List<Inventory> findByFiberMaterialContaining(String fiberMaterial);
-
-    List<Inventory> findByCustomerNameContainingAndFiberMaterialContaining(String customerName, String fiberMaterial);
+//    List<Inventory> findByCustomerNameContaining(String customerName);
+//
+//    List<Inventory> findByFiberMaterialContaining(String fiberMaterial);
+//
+//    List<Inventory> findByCustomerNameContainingAndFiberMaterialContaining(String customerName, String fiberMaterial);
 
     List<Inventory> findByCustomerNameAndFiberMaterialIn(String customerName, List<String> fiberMaterials);
 
     List<Inventory> findByCustomerName(String customerName);
+
+    @Query("SELECT MAX(i.baleNum) FROM Inventory i WHERE i.customerName = :customerName AND i.fiberMaterial = :fiberMaterial")
+    Integer findMaxBaleNumByCustomerAndMaterial(@Param("customerName") String customerName, @Param("fiberMaterial") String fiberMaterial);
+
 }

@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Form, InputNumber, Select, message } from "antd";
-import { useFactoryProcesses } from "../hooks/useFactoryProcesses";
-import { useCustomers } from "../hooks/useCustomers";
-import { useColors } from "../hooks/useColors";
-import { useFiberTypes } from "../hooks/useFiberTypes";
-import { createOrder } from "../routes";
+import { constantsService } from "../Services/constants.service";
+import { orderService } from "../Services/order.service";
 
 const { Option } = Select;
 
@@ -29,33 +26,35 @@ const SelectField = ({ label, name, options, placeholder, onChange, rules }) => 
   </Form.Item>
 );
 
-const OrderForm = ({ isModalVisible, handleOk, handleCancel, addOrder }) => {
+const OrderForm = ({ isModalVisible, handleOk, handleCancel }) => {
   const [newOrder, setNewOrder] = useState({});
   const [form] = Form.useForm();
 
-  const { factoryProcesses, fetchFactoryProcesses } = useFactoryProcesses();
-  const { customers, fetchCustomers } = useCustomers();
-  const { fiberColors, fetchColors } = useColors();
-  const { fiberTypes, fetchFiberTypes } = useFiberTypes();
+  const [fiberColors, setFiberColors] = useState([]);
+  const [fiberTypes, setFiberTypes] = useState([]);
+  const [customers, setCustomers] = useState([]);
+  const [factoryProcesses, setFactoryProcesses] = useState([]);
 
   useEffect(() => {
     if (isModalVisible) {
-      fetchInitialData();
-      form.resetFields();
-      setNewOrder({});
+      fetchModalData();
     }
   }, [isModalVisible]);
 
-  const fetchInitialData = async () => {
+  const fetchModalData = async () => {
     try {
-      await Promise.all([
-        fetchFactoryProcesses(),
-        fetchCustomers(),
-        fetchColors(),
-        fetchFiberTypes(),
+      const [colors, types, customers, processes] = await Promise.all([
+        constantsService.fetchAllFiberColors(),
+        constantsService.fetchAllFiberTypes(),
+        constantsService.fetchAllCustomers(),
+        constantsService.fetchAllFactoryProcesses(),
       ]);
+      setFiberColors(colors);
+      setFiberTypes(types);
+      setCustomers(customers);
+      setFactoryProcesses(processes);
     } catch (error) {
-      message.error(error.message);
+      message.error('Error loading data for the modal.');
     }
   };
 
@@ -63,7 +62,7 @@ const OrderForm = ({ isModalVisible, handleOk, handleCancel, addOrder }) => {
     try {
       await form.validateFields();
 
-      const orderData = {
+      const requestBody = {
         customerName: newOrder.customerName,
         fiberColor: newOrder.fiberColor,
         fiberType: newOrder.fiberType,
@@ -71,10 +70,10 @@ const OrderForm = ({ isModalVisible, handleOk, handleCancel, addOrder }) => {
         weight: newOrder.weight,
       };
 
-      const response = await createOrder(orderData);
-      addOrder(response);
-      handleOk();
+      await orderService.createOrder(requestBody);
       message.success("Захиалга амжилттай үүслээ");
+      form.resetFields();
+      handleOk();
     } catch (error) {
       message.error(error.message);
     }

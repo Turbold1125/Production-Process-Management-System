@@ -4,6 +4,7 @@ import com.example.ProductionManagementSystem.Api.User.UserApi;
 import com.example.ProductionManagementSystem.Exception.ServiceException;
 import com.example.ProductionManagementSystem.Model.User.User;
 import com.example.ProductionManagementSystem.Service.User.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 

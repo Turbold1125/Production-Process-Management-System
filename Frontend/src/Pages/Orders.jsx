@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { Table, Input, Row, Col, Select, Button, Card, Typography, Tooltip, Statistic, Tag, message, Space, } from 'antd';
+import React, { useState, useEffect } from 'react';
+import { Table, Input, Row, Col, Select, Button, Card, Typography, Tooltip, Statistic, Tag, message, Space, Form, } from 'antd';
 import { SearchOutlined, PlusOutlined, SyncOutlined, EyeOutlined } from '@ant-design/icons';
 import { getAllOrders } from '../routes';
 import { useNavigate } from 'react-router-dom';
@@ -9,7 +9,7 @@ import { StatusColorMap } from '../Constants/Constants';
 
 import { formatDate } from '../Utils/DateFormat';
 
-const { Title, Text } = Typography;
+const { Title } = Typography;
 const { Option } = Select;
 
 const STATUS_OPTIONS = [
@@ -21,6 +21,7 @@ const STATUS_OPTIONS = [
 
 const Orders = () => {
   const navigate = useNavigate();
+
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
   const [orders, setOrders] = useState([]);
@@ -49,9 +50,11 @@ const Orders = () => {
   const handleSearch = (e) => setSearchQuery(e.target.value);
   const handleStatusChange = (value) => setStatusFilter(value);
   const showModal = () => setIsModalVisible(true);
-  const handleModalOk = () => setIsModalVisible(false);
-  const handleModalCancel = () => setIsModalVisible(false);
-  const addOrder = (order) => setOrders([...orders, order]);
+
+  const handleModalOk = () => {
+    setIsModalVisible(false);
+    fetchOrders();
+  }
 
   const filteredOrders = orders.filter((order) => {
     const matchesStatus = statusFilter === 'All' || order.status === statusFilter;
@@ -277,9 +280,7 @@ const Orders = () => {
       <OrderForm
         isModalVisible={isModalVisible}
         handleOk={handleModalOk}
-        handleCancel={handleModalCancel}
-        addOrder={addOrder}
-        loading={loading}
+        handleCancel={() => setIsModalVisible(false)}
       />
 
       <ProcessDetailsModal

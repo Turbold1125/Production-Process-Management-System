@@ -1,64 +1,55 @@
-import { useState, useEffect } from 'react';
-import axios from 'axios';
-
-const API_BASE_URL = 'http://localhost:8080/api';
-
-const handleError = (error) => {
-    console.error('API call error:', error);
-    if (error.response && error.response.data && error.response.data.message) {
-        throw new Error(error.response.data.message);
-    } else {
-        throw new Error('An unexpected error occurred');
-    }
-};
+import { useState, useCallback } from 'react';
+import { orderService } from '../Services/order.service';
+import { message } from 'antd';
 
 export const useOrders = () => {
     const [orders, setOrders] = useState([]);
-
-    useEffect(() => {
-        fetchOrders();
-        fetchRecentOrders();
-    }, []);
+    const [isLoading, setIsLoading] = useState(false);
     
-    const fetchRecentOrders = async () => {
+    const fetchRecentOrders = useCallback(async () => {
         try {
-            const response = await axios.get(`${API_BASE_URL}/order/recent`);
-            setOrders(response.data);
+            const data = await orderService.fetchRecentOrders();
+            setOrders(data);
         } catch (error) {
-            handleError(error);
+            message.error(error.message);
+        } finally {
+            setIsLoading(false);
         }
-    };
+    }, []);
 
-    const fetchOrders = async () => {
+    const fetchOrders = useCallback(async () => {
+        setIsLoading(true);
         try {
-            const response = await axios.get(`${API_BASE_URL}/order/all`);
-            const sortedOrders = response.data.sort((a, b) => a.id - b.id);
-            setOrders(sortedOrders);
+            const data = await orderService.fetchAllOrders();
+            setOrders(data);
         } catch (error) {
-            handleError(error);
+            message.error(error.message);
+        } finally {
+            setIsLoading(false);
         }
-    };
+    }, []);
 
-    const createOrder = async (values) => {
+    const createOrder = async (data) => {
         try {
-            const response = await axios.post(`${API_BASE_URL}/orders/create`, values);
-            setOrders((prevOrders) => {
-                const newOrders = [...prevOrders, response.data];
-                return newOrders.sort((a, b) => a.id - b.id);
-            });
-            return response.data;
+            const response = await orderService.createOrder(data);
+            // setOrders((prevOrders) => {
+            //     const newOrders = [...prevOrders, response.data];
+            //     return newOrders.sort((a, b) => a.id - b.id);
+            // });
+            await fetchOrders();
+            return response;
         } catch (error) {
-            handleError(error);
+            message.error(error.message);
         }
     };
 
     const deleteOrder = async (id) => {
         try {
-            const response = await axios.delete(`${API_BASE_URL}/orders/delete/${id}`);
-            fetchOrders();
+            const response = await orderService.deleteOrder(id);
+            await fetchOrders();
             return response.data;
         } catch (error) {
-            handleError(error);
+            message.error(error.message);
         }
     };
 

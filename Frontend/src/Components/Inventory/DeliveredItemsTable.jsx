@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Table, Modal, Button, Tag } from "antd";
+import { Table, Modal, Button } from "antd";
 import { formatDate } from "../../Utils/DateFormat";
 
 const DeliveredItemsTable = ({ deliveredData }) => {

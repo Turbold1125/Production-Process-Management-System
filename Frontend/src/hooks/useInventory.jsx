@@ -31,17 +31,6 @@ export const useInventory = () => {
         }
     }, []);
 
-    // const createInventory = async (data) => {
-    //     try {
-    //         const response = await axios.post(`${API_BASE_URL}/inventory/create`, data);
-    //         await fetchInventoryData();
-    //         await fetchInventoryLogs();
-    //         return response.data;
-    //     } catch (error) {
-    //         handleError(error);
-    //     }
-    // };
-
     const createInventory = async (data) => {
         try {
             const response = await inventoryService.createInventory(data);

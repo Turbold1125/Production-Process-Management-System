@@ -20,7 +20,7 @@ public class FactoryProcessService {
     private static final Logger logger = LoggerFactory.getLogger(FactoryProcessService.class);
 
     public List<FactoryProcess> getAllProcess() throws ServiceException {
-        List<FactoryProcess> processList = factoryProcessRepository.findAll();
+        List<FactoryProcess> processList = factoryProcessRepository.findAllByOrderByIdAsc();
         logger.info("Getting all factory processes {}", processList.size(), processList);
         if (processList.isEmpty()) {
             throw new ServiceException(ErrorResponse.NO_CONTENT);
@@ -54,12 +54,18 @@ public class FactoryProcessService {
     }
 
     public FactoryProcess updateProcess(Integer id, FactoryProcess factoryProcess) throws ServiceException {
-
         FactoryProcess existingFactoryProcess = factoryProcessRepository.findById(id)
                 .orElseThrow(() -> new ServiceException(ErrorResponse.NOT_FOUND));
 
         existingFactoryProcess.setName(factoryProcess.getName());
+        existingFactoryProcess.setName_en(factoryProcess.getName_en());
         existingFactoryProcess.setDescription(factoryProcess.getDescription());
+        existingFactoryProcess.setInputs(factoryProcess.getInputs());
+        existingFactoryProcess.setInputs_en(factoryProcess.getInputs_en());
+        existingFactoryProcess.setOutputs(factoryProcess.getOutputs());
+        existingFactoryProcess.setOutputs_en(factoryProcess.getOutputs_en());
+        existingFactoryProcess.setWaste(factoryProcess.getWaste());
+        existingFactoryProcess.setRequiredLot(factoryProcess.getRequiredLot());
 
         return factoryProcessRepository.save(existingFactoryProcess);
     }

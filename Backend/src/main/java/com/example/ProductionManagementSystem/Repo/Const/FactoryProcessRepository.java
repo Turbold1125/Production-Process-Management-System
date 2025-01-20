@@ -2,6 +2,7 @@ package com.example.ProductionManagementSystem.Repo.Const;
 
 import com.example.ProductionManagementSystem.Model.Const.FactoryProcess;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Table, Button, Modal, Form, Input, message, Popconfirm, Row, Col, Card, Typography, Space, Tabs } from "antd";
+import { Table, Button, Modal, Form, Input, message, Popconfirm, Row, Col, Card, Typography, Space, Tabs, Checkbox } from "antd";
 import { PlusOutlined, EditOutlined, DeleteOutlined, BgColorsOutlined, AppstoreOutlined, UserOutlined, SettingOutlined, TeamOutlined, UserSwitchOutlined } from '@ant-design/icons';
 import { useFactoryProcesses } from "../hooks/useFactoryProcesses";
 import { useCustomers } from "../hooks/useCustomers";
@@ -39,6 +39,7 @@ const ConstantsManager = () => {
                     outputs_en: item.outputs_en,
                     description: item.description,
                     waste: item.waste,
+                    requiredLot: item.requiredLot,
                 }),
                 ...(constantType === "customer" && {
                     email: item.email,
@@ -70,6 +71,7 @@ const ConstantsManager = () => {
                     throw new Error(`No update function found for type: ${currentType}`);
                 }
                 await updateFunctions[currentType](currentItem.id, values);
+                
                 message.success("Амжилттай шинэчиллээ!");
             } else {
                 const createFunctions = {
@@ -189,6 +191,14 @@ const ConstantsManager = () => {
                         <Form.Item name="waste" label="Хаягдал">
                             <Input.TextArea placeholder="Хаягдал оруулна уу" style={{ borderRadius: 8 }} rows={4} />
                         </Form.Item>
+                        <Form.Item
+                            name="requiredLot"
+                            valuePropName="checked"
+                            label="LOT шаардлагатай юу?"
+                            style={{ marginBottom: 0 }}
+                        >
+                            <Checkbox>LOT шаардлагатай</Checkbox>
+                        </Form.Item>
                     </Card>
                 </>
             );
@@ -209,7 +219,7 @@ const ConstantsManager = () => {
                     </Button>
                 </Col>
             </Row>
-            <Table columns={columns} dataSource={dataSource} rowKey="id" pagination={{ pageSize: 7 }} />
+            <Table rowKey="id" columns={columns} dataSource={dataSource} pagination={{ pageSize: 7 }} />
         </Card>
     );
 
@@ -231,6 +241,8 @@ const ConstantsManager = () => {
                 // { title: "Гаралтын бүтээгдэхүүн (англи)", dataIndex: "outputs_en", key: "outputs_en" },
                 // { title: "Тайлбар", dataIndex: "description", key: "description", align: "center", },
                 { title: "Хаягдал", dataIndex: "waste", key: "waste", align: "center", },
+                { title: "LOT шаардлагатай", dataIndex: "requiredLot", key: "requiredLot", align: "center", render: (value) => (value ? "Тийм" : "Үгүй"),
+                },
             ],
             customer: [
                 { title: "Email", dataIndex: "email", key: "email" },

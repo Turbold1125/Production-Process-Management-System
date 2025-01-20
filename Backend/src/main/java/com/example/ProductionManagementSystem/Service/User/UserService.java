@@ -52,8 +52,10 @@ public class UserService {
 
         existingUser.setEmail(user.getEmail());
         existingUser.setUsername(user.getUsername());
-        if (!passwordEncoder.matches(user.getPassword(), existingUser.getPassword())) {
-            existingUser.setPassword(passwordEncoder.encode(user.getPassword()));
+        if (!user.getPassword().equals(existingUser.getPassword())) {
+                existingUser.setPassword(passwordEncoder.encode(user.getPassword()));
+        } else {
+                existingUser.setPassword(user.getPassword());
         }
         existingUser.setRole(user.getRole());
 

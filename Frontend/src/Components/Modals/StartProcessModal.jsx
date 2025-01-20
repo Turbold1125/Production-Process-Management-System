@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { Modal, Table, Typography, message } from "antd";
-import { inventoryColumns } from "../OrderDetails/Columns";
+import { inventoryColumns } from "../Columns/ProcessColumns";
 import { UserContext } from "../../Context/userContext";
 import { processService } from "../../Services/process.service";
 

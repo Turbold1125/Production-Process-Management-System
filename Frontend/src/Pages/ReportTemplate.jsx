@@ -1,18 +1,16 @@
 import React from "react";
 import { PDFViewer, Document, Page, Text, View, Image, StyleSheet, Font } from "@react-pdf/renderer";
 
-// Correct Font Registration (use public directory)
 Font.register({
     family: "NotoSans",
-    src: "/fonts/NotoSans-Italic-VariableFont_wdth,wght.ttf", // Move font to public/fonts
+    src: "/fonts/NotoSans-Italic-VariableFont_wdth,wght.ttf", 
 });
 
-// Define styles
 const styles = StyleSheet.create({
     page: {
         padding: 20,
         fontSize: 10,
-        fontFamily: "NotoSans", // Use the registered font
+        fontFamily: "NotoSans", 
     },
     header: {
         flexDirection: "row",
@@ -28,7 +26,7 @@ const styles = StyleSheet.create({
         fontSize: 14,
         textAlign: "center",
         marginBottom: 10,
-        fontFamily: "NotoSans", // Apply the custom font
+        fontFamily: "NotoSans", 
     },
     section: {
         marginBottom: 10,
@@ -83,7 +81,6 @@ const Table = ({ data, columns }) => (
     </View>
 );
 
-// PDF Document
 const ReportDocument = () => {
     const yieldData = [
         ["Түүхий эд / Dehaired Cashmere", "298.6", "10.47%", "93.640"],
@@ -131,7 +128,6 @@ const ReportDocument = () => {
                     </Text>
                 </View>
 
-                {/* Order Details */}
                 <View style={styles.section}>
                     <Text>Захиалагч / Customer: Өгөөж Шим</Text>
                     <Text>Хэсэг "lot"-ийн # / Lot #: CA23/04/0404</Text>
@@ -139,31 +135,26 @@ const ReportDocument = () => {
                     <Text>Огноо/ Date: 1/25/2025</Text>
                 </View>
 
-                {/* Yield Table */}
                 <Text style={{ fontSize: 12, marginTop: 10, fontWeight: "bold" }}>
                     Гарц, жингийн тооцоолол
                 </Text>
                 <Table data={yieldData} columns={yieldColumns} />
 
-                {/* Parameter Table */}
                 <Text style={{ fontSize: 12, marginTop: 20, fontWeight: "bold" }}>
                     Чанарын үзүүлэлт
                 </Text>
                 <Table data={paramData} columns={paramColumns} />
 
-                {/* Payment */}
                 <Text style={{ fontSize: 12, marginTop: 20, fontWeight: "bold" }}>
                     Төлбөр
                 </Text>
                 <Table data={paymentData} columns={paymentColumns} />
 
-                {/* Footer */}
                 <View style={styles.section}>
                     <Text>Төлбөр / Payment: Ган Эрдэнэ</Text>
                     <Text>Хүлээн авагч / Received by: Ган Эрдэнэ</Text>
                 </View>
 
-                {/* Footer */}
                 <View style={styles.footer}>
                     <View style={styles.signature}>
                         <Text>Хүлээлгэн өгсөн / Given by: ...................................................Ган-Эрдэнэ</Text>

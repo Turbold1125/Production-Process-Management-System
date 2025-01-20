@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Select, message, Table } from "antd";
+import { useInventory } from "../../hooks/useInventory";
+import { deliveryService } from "../../Services/delivery.service";
 
 const { Option } = Select;
 
 const DeliverItemsModal = ({ visible, onCancel, inventories, onDeliver }) => {
+  const { refreshInventoryData } = useInventory();
   const [selectedCustomer, setSelectedCustomer] = useState(null);
   const [filteredInventories, setFilteredInventories] = useState([]);
   const [selectedInventories, setSelectedInventories] = useState([]);
@@ -42,6 +45,8 @@ const DeliverItemsModal = ({ visible, onCancel, inventories, onDeliver }) => {
       });
   
       setSelectedInventories([]);
+      await refreshInventoryData(); 
+      await deliveryService.fetchAllDelivered();
     } catch (error) {
       console.error("Error delivering items:", error);
       message.error("Failed to deliver items. Please try again.");

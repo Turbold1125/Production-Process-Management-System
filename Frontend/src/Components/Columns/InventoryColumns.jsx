@@ -1,19 +1,9 @@
 import React from 'react';
 import { Tag, Button } from 'antd';
 import { formatDate } from '../../Utils/DateFormat';
-import { FiberColorMap } from '../../Constants/Constants';
+import { fiberColorMap } from '../../Constants/Colors';
 import { DeleteOutlined } from '@ant-design/icons';
-
-const processTagColors = {
-  Будах: "blue",
-  Цувих: "orange",
-  Холих: "green",
-  Ээрэх: "purple",
-  Ороох: "cyan",
-  Давхарлах: "volcano",
-  Мушгих: "gold",
-  CREATE: "lime"
-};
+import { processTagColors } from '../../Constants/Colors';
 
 export const selectedItemsColumns = (deleteRow) => [
   { title: 'Түүхий эдийн төрөл', dataIndex: 'fiberMaterial', key: 'fiberMaterial' },
@@ -78,7 +68,7 @@ export const inventoryColumns = (data) => [
       value: fiberColor,
     })),
     onFilter: (value, record) => record.fiberColor.includes(value),
-    render: (fiberColor) => <Tag color={FiberColorMap[fiberColor]}>{fiberColor}</Tag>
+    render: (fiberColor) => <Tag color={fiberColorMap[fiberColor]}>{fiberColor}</Tag>
   },
   {
     title: 'Төрөл',
@@ -130,7 +120,7 @@ export const inventoryColumns = (data) => [
   },
 ];
 
-export const logColumns = (data) => [
+export const inventoryLogColumns = (data) => [
   {
     title: 'Бүртгэлийн дугаар',
     dataIndex: 'id',
@@ -180,7 +170,7 @@ export const logColumns = (data) => [
     key: 'fiberColor',
     filterSearch: true,
     render: (fiberColor) => (
-      <Tag color={FiberColorMap[fiberColor]}>
+      <Tag color={fiberColorMap[fiberColor]}>
         {fiberColor}
       </Tag>
     ),
@@ -240,32 +230,32 @@ export const logColumns = (data) => [
 ];
 
 
-export const processLogColumns = [
-  {
-    title: "Процессын нэр",
-    dataIndex: "processName",
-    key: "processName",
-  },
-  {
-    title: "Оролтын жин (кг)",
-    dataIndex: "inputMaterialWeight",
-    key: "inputMaterialWeight",
-  },
-  {
-    title: "Гаралтын жин (кг)",
-    dataIndex: "outputMaterialWeight",
-    key: "outputMaterialWeight",
-  },
-  {
-    title: "Процесс эхэлсэн цаг",
-    dataIndex: "processStartTime",
-    key: "processStartTime",
-    render: (text) => new Date(text).toLocaleString(),
-  },
-  {
-    title: "Процесс дууссан цаг",
-    dataIndex: "processEndTime",
-    key: "processEndTime",
-    render: (text) => new Date(text).toLocaleString(),
-  },
-];
+// export const processLogColumns = [
+//   {
+//     title: "Процессын нэр",
+//     dataIndex: "processName",
+//     key: "processName",
+//   },
+//   {
+//     title: "Оролтын жин (кг)",
+//     dataIndex: "inputMaterialWeight",
+//     key: "inputMaterialWeight",
+//   },
+//   {
+//     title: "Гаралтын жин (кг)",
+//     dataIndex: "outputMaterialWeight",
+//     key: "outputMaterialWeight",
+//   },
+//   {
+//     title: "Процесс эхэлсэн цаг",
+//     dataIndex: "processStartTime",
+//     key: "processStartTime",
+//     render: (text) => new Date(text).toLocaleString(),
+//   },
+//   {
+//     title: "Процесс дууссан цаг",
+//     dataIndex: "processEndTime",
+//     key: "processEndTime",
+//     render: (text) => new Date(text).toLocaleString(),
+//   },
+// ];

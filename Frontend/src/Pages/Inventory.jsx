@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Button, Form, Input, message, Select, Row, Col, Card, Typography, Space, Tag, Tooltip, Progress, Modal, } from 'antd';
+import { Table, Button, Form, Input, message, Select, Row, Col, Card, Typography, Space, Tooltip, Progress, Modal, } from 'antd';
 import { PlusOutlined, SearchOutlined, ExportOutlined, BarChartOutlined, } from '@ant-design/icons';
 import { useMaterials } from '../hooks/useMaterials';
-import { inventoryColumns, logColumns } from '../Components/Inventory/Columns';
+import { inventoryColumns, inventoryLogColumns } from '../Components/Columns/InventoryColumns';
 import ReceiveItemModal from '../Components/Modals/ReceiveItemModal';
 import DeliveredItemsTable from '../Components/Inventory/DeliveredItemsTable';
 import { deliveryService } from '../Services/delivery.service';
@@ -263,7 +263,7 @@ const Inventory = () => {
       >
         <Title level={3}>Агуулахын түүх</Title>
         <Table
-          columns={logColumns(logData)}
+          columns={inventoryLogColumns(logData)}
           dataSource={logData}
           rowKey="id"
           pagination={{

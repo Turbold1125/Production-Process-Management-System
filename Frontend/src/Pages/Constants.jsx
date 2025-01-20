@@ -71,7 +71,7 @@ const ConstantsManager = () => {
                     throw new Error(`No update function found for type: ${currentType}`);
                 }
                 await updateFunctions[currentType](currentItem.id, values);
-                
+
                 message.success("Амжилттай шинэчиллээ!");
             } else {
                 const createFunctions = {
@@ -241,7 +241,8 @@ const ConstantsManager = () => {
                 // { title: "Гаралтын бүтээгдэхүүн (англи)", dataIndex: "outputs_en", key: "outputs_en" },
                 // { title: "Тайлбар", dataIndex: "description", key: "description", align: "center", },
                 { title: "Хаягдал", dataIndex: "waste", key: "waste", align: "center", },
-                { title: "LOT шаардлагатай", dataIndex: "requiredLot", key: "requiredLot", align: "center", render: (value) => (value ? "Тийм" : "Үгүй"),
+                {
+                    title: "LOT шаардлагатай", dataIndex: "requiredLot", key: "requiredLot", align: "center", render: (value) => (value ? "Тийм" : "Үгүй"),
                 },
             ],
             customer: [
@@ -278,40 +279,29 @@ const ConstantsManager = () => {
         <div className={styles.constantsManager}>
             <Tabs defaultActiveKey="1" centered>
 
-                <TabPane tab={<span><UserSwitchOutlined />Хэрэглэгч</span>} key="1">
+                <TabPane tab={<span><UserSwitchOutlined />Хэрэглэгч</span>} key="user-management">
                     <UserManagement />
                 </TabPane>
 
-                <Space size={5}></Space>
-
-                <TabPane tab={<span><BgColorsOutlined />Өнгө</span>} key="2">
+                <TabPane tab={<span><BgColorsOutlined />Өнгө</span>} key="colors">
                     {renderTableCard("Өнгө", renderColumns("fiberColor"), fiberColors, "fiberColor")}
                 </TabPane>
 
-                <Space size={5}></Space>
-
-                <TabPane tab={<span><AppstoreOutlined />Материал</span>} key="3">
+                <TabPane tab={<span><AppstoreOutlined />Материал</span>} key="materials">
                     {renderTableCard("Материал", renderColumns("material"), materials, "material")}
                 </TabPane>
 
-                <Space size={5}></Space>
-
-                <TabPane tab={<span><UserOutlined />Төрөл</span>} key="4">
+                <TabPane tab={<span><UserOutlined />Төрөл</span>} key="fiber-types">
                     {renderTableCard("Төрөл", renderColumns("fiberType"), fiberTypes, "fiberType")}
                 </TabPane>
 
-                <Space size={5}></Space>
-
-                <TabPane tab={<span><SettingOutlined />Процесс</span>} key="5">
+                <TabPane tab={<span><SettingOutlined />Процесс</span>} key="processes">
                     {renderTableCard("Процесс", renderColumns("factoryProcess"), factoryProcesses, "factoryProcess")}
                 </TabPane>
 
-                <Space size={5}></Space>
-
-                <TabPane tab={<span><TeamOutlined />Харилцагч</span>} key="6">
+                <TabPane tab={<span><TeamOutlined />Харилцагч</span>} key="customers">
                     {renderTableCard("Харилцагч", renderColumns("customer"), customers, "customer")}
                 </TabPane>
-
             </Tabs>
 
             <Modal title={modalType === "create" ? "Шинэ нэмэх" : "Засварлах"} visible={isModalVisible} onCancel={handleCancel} footer={null}>

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Card, Button, Row, Col, Table, Spin, Alert, message, Tabs, Tag } from "antd";
+import { Card, Button, Row, Col, Table, Spin, Alert, message, Tabs } from "antd";
 import { CheckCircleOutlined, FilePdfOutlined, PlayCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import useOrderDetails from "../hooks/useOrderDetailss";
-import { inventoryColumns, processColumns, processIOColumns, processLogColumns } from "../Components/OrderDetails/Columns";
+import { processLogColumns, processColumns, processIOColumns, inventoryColumns } from "../Components/Columns/ProcessColumns";
 import StepsComponent from "../Components/OrderDetails/Steps";
 import ReceiveItemModal from "../Components/Modals/ReceiveItemModal";
 import Header from "../Components/OrderDetails/Header";
@@ -15,15 +15,6 @@ import { processService } from "../Services/process.service";
 import { reportService } from "../Services/report.service";
 
 const { TabPane } = Tabs;
-
-const getStatusTag = (status) => {
-  const colorMap = {
-    COMPLETED: "green",
-    IN_PROGRESS: "blue",
-    PENDING: "orange",
-  };
-  return <Tag color={colorMap[status] || "default"}>{status}</Tag>;
-};
 
 const OrderDetailsLayout = () => {
   const { id: orderId } = useParams();
@@ -92,9 +83,6 @@ const OrderDetailsLayout = () => {
     const selectedInputMaterial = matchingFactoryProcess?.inputs || null;
     
     setSelectedInputMaterial(selectedInputMaterial)
-    console.log("OrderDetails:::", orderDetails)
-    console.log("selectedProcessIndex:::", processes[selectedProcessIndex])
-    console.log("SelectedProcessMaterial", selectedInputMaterial)
   };
 
   /* ---------------------------------------- */
@@ -185,7 +173,7 @@ const OrderDetailsLayout = () => {
             {/* Захиалгын дэлгэрэнгүй */}
             <Col xs={24} md={16}>
 
-              <OrderInfo orderDetails={orderDetails} getStatusTag={getStatusTag} />
+              <OrderInfo orderDetails={orderDetails}/>
 
               <InputOutputCard
                 title="Гаралтын процесс лог"

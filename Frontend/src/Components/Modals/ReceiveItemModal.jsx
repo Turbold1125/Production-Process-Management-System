@@ -3,7 +3,7 @@ import { Typography, Modal, Form, Select, Input, Button, Table, message, Row, Co
 import { PlusOutlined } from '@ant-design/icons';
 import { constantsService } from '../../Services/constants.service';
 import { inventoryService } from '../../Services/Inventory.service';
-import { selectedItemsColumns } from '../Inventory/Columns';
+import { selectedItemsColumns } from '../Columns/InventoryColumns';
 
 const { Title } = Typography;
 const { Option } = Select;

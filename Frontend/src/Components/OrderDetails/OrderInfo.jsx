@@ -1,8 +1,9 @@
 import React from 'react';
-import { Card, Descriptions } from 'antd';
+import { Card, Descriptions, Tag } from 'antd';
 import { formatDate } from '../../Utils/DateFormat';
+import { StatusColorMap } from '../../Constants/Colors';
 
-const OrderInfo = ({ orderDetails, getStatusTag }) => {
+const OrderInfo = ({ orderDetails }) => {
   return (
     <Card
       title="Мэдээлэл"
@@ -27,7 +28,9 @@ const OrderInfo = ({ orderDetails, getStatusTag }) => {
           {orderDetails.fiberType}
         </Descriptions.Item>
         <Descriptions.Item label="Төлөв">
-          {getStatusTag(orderDetails.status)}
+          <Tag color={StatusColorMap[orderDetails.status] || "default"}>
+            {orderDetails.status}
+          </Tag>
         </Descriptions.Item>
       </Descriptions>
     </Card>

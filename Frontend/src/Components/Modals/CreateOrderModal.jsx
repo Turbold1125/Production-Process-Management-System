@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Form, InputNumber, Select, message } from "antd";
-import { constantsService } from "../Services/constants.service";
-import { orderService } from "../Services/order.service";
+import { constantsService } from "../../Services/constants.service";
+import { orderService } from "../../Services/order.service";
 
 const { Option } = Select;
 
@@ -26,7 +26,7 @@ const SelectField = ({ label, name, options, placeholder, onChange, rules }) => 
   </Form.Item>
 );
 
-const OrderForm = ({ isModalVisible, handleOk, handleCancel }) => {
+const CreateOrderModal = ({ isModalVisible, handleOk, handleCancel }) => {
   const [newOrder, setNewOrder] = useState({});
   const [form] = Form.useForm();
 
@@ -173,4 +173,4 @@ const OrderForm = ({ isModalVisible, handleOk, handleCancel }) => {
   );
 };
 
-export default OrderForm;
+export default CreateOrderModal;

@@ -3,9 +3,9 @@ import { Table, Input, Row, Col, Select, Button, Card, Typography, Tooltip, Stat
 import { SearchOutlined, PlusOutlined, SyncOutlined } from '@ant-design/icons';
 import { getAllOrders } from '../routes';
 import { useNavigate } from 'react-router-dom';
-import OrderForm from '../Components/OrderForm';
-import ProcessDetailsModal from '../Components/ProcessDetailModal';
-import { orderColumns } from '../Components/columns';
+import CreateOrderModal from '../Components/Modals/CreateOrderModal';
+import ProcessDetailsModal from '../Components/Modals/ProcessDetailModal';
+import { orderColumns } from '../Components/Columns/OrderColumns';
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -197,8 +197,8 @@ const Orders = () => {
         />
       </Card>
 
-      {/* Order Form Modal */}
-      <OrderForm
+      {/* Create Order Modal */}
+      <CreateOrderModal
         isModalVisible={isModalVisible}
         handleOk={handleModalOk}
         handleCancel={() => setIsModalVisible(false)}

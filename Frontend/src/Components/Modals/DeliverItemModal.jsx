@@ -26,15 +26,7 @@ const DeliverItemsModal = ({ visible, onCancel, inventories, onDeliver }) => {
   }, [selectedCustomer, inventories]);
 
   const handleDeliver = async () => {
-    if (!selectedCustomer) {
-      message.error("Хэрэглэгч сонгоно уу.");
-      return;
-    }
-    
-    if (selectedInventories.length === 0) {
-      message.warning("Түүхий эд сонгоно уу.");
-      return;
-    }
+
   
     try {
       await onDeliver({
@@ -46,10 +38,9 @@ const DeliverItemsModal = ({ visible, onCancel, inventories, onDeliver }) => {
   
       setSelectedInventories([]);
       await refreshInventoryData(); 
-      await deliveryService.fetchAllDelivered();
+      await deliveryService.deliverInventory();
     } catch (error) {
       console.error("Error delivering items:", error);
-      message.error("Failed to deliver items. Please try again.");
     }
   };
 

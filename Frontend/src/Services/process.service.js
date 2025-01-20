@@ -2,25 +2,42 @@ import axios from "axios";
 
 const API_BASE_URL = "http://localhost:8080/api";
 
+const handleRequest = async (apiCall) => {
+  try {
+    const response = await apiCall();
+    return response.data;
+  } catch (error) {
+    if (error.response && error.response.data && error.response.data.message) {
+      
+      throw new Error(error.response.data.message);
+    } else {
+      throw new Error("An error occurred. Please try again.");
+    }
+  }
+};
+
 const startProcess = async (payload) => {
-  const response = await axios.post(`${API_BASE_URL}/processes/start`, payload);
-  return response.data;
+  return handleRequest(() => axios.get(`${API_BASE_URL}/processes/start`, payload));
 };
 
 const endProcess = async (payload) => {
-  const response = await axios.post(`${API_BASE_URL}/processes/end`, payload);
-  return response.data;
+  return handleRequest(() => axios.get(`${API_BASE_URL}/processes/end`, payload));
 };
 
 const requiredMaterial = async (processName, customerName) => {
-  const response = await axios.get(`${API_BASE_URL}/processes/required-materials`, {
+  return handleRequest(() => axios.get(`${API_BASE_URL}/processes/required-materials`, {
       params: { processName, customerName },
-    });
-    return response.data;
+    })
+  );
 };
+
+const fetchOrderProcesses = async (orderId) => {
+  return handleRequest(() => axios.get(`${API_BASE_URL}/order/${orderId}/processes`));
+}
 
 export const processService = {
   startProcess,
   endProcess,
-  requiredMaterial
+  requiredMaterial,
+  fetchOrderProcesses
 };

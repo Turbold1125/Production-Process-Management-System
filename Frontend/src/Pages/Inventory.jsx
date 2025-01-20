@@ -8,6 +8,7 @@ import DeliveredItemsTable from '../Components/Inventory/DeliveredItemsTable';
 import { deliveryService } from '../Services/delivery.service';
 import DeliverItemsModal from '../Components/Modals/DeliverItemModal';
 import { useInventory } from '../hooks/useInventory';
+import ErrorNotification from '../Components/ErrorNotification';
 
 const { Option } = Select;
 const { Title, Text } = Typography;
@@ -62,7 +63,8 @@ const Inventory = () => {
       fetchDeliveredItems();
       setIsShipModalVisible(false);
     } catch (error) {
-      message.error(error.message);
+      // message.error(error.message);
+      ErrorNotification.show(error);
     }
   };
 

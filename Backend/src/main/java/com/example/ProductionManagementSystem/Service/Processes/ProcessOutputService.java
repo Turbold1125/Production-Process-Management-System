@@ -25,34 +25,6 @@ public class ProcessOutputService {
     private final ProcessRepository processRepository;
     private final ProcessOutputRepository processOutputRepository;
 
-//    public void logProcessInput(Integer processId, Integer orderId, FiberRequest fiber, Inventories inventory, String customerName) {
-//            ProcessInput processInput = new ProcessInput();
-//            processInput.setProcessId(processId);
-//            processInput.setCustomerName(customerName);
-//            processInput.setMaterial(fiber.getInputMaterial());
-//            processInput.setWeight(fiber.getInputMaterialWeight());
-//            processInput.setColor(inventory.getFiberColor());
-//            processInput.setInventoryId(fiber.getInventoryId());
-//            processInput.setOrderId(orderId);
-//            processInput.setDateTime(inventory.getDateTime());
-//            processInputRepository.save(processInput);
-//    }
-
-
-//    public void logPrimaryOutput(Integer processId, Integer orderId, Inventories inventory, OutputType outputType) {
-//        ProcessOutput output = new ProcessOutput();
-//        output.setProcessId(processId);
-//        output.setOrderId(orderId);
-//        output.setMaterial(inventory.getFiberMaterial());
-//        output.setWeight(inventory.getConWeight());
-//        output.setColor(inventory.getFiberColor());
-//        output.setType(outputType);
-//        output.setCustomerName(inventory.getCustomerName());
-//        output.setInventoryId(inventory.getId());
-//        output.setDateTime(inventory.getDateTime());
-//        processOutputRepository.save(output);
-//    }
-
     public void logProcessInput(Process process, FiberRequest fiber, Inventory inventory) {
         ProcessInput processInput = new ProcessInput(
                 process.getId(),
@@ -88,20 +60,6 @@ public class ProcessOutputService {
         );
         processOutputRepository.save(output);
     }
-
-//    public void logWasteOutput(Integer processId, Integer orderId, Inventories inventory, WasteRequest wasteRequest) {
-//        ProcessOutput output = new ProcessOutput();
-//        output.setProcessId(processId);
-//        output.setOrderId(orderId);
-//        output.setMaterial(wasteRequest.getMaterial());
-//        output.setWeight(wasteRequest.getWeight());
-//        output.setColor(inventory.getFiberColor());
-//        output.setType(OutputType.WASTE);
-//        output.setCustomerName(inventory.getCustomerName());
-//        output.setInventoryId(inventory.getId());
-//        output.setDateTime(inventory.getDateTime());
-//        processOutputRepository.save(output);
-//    }
 
     public boolean areAllProcessesCompleted(Integer orderId) {
         List<Process> processes = processRepository.findByOrderId(orderId);

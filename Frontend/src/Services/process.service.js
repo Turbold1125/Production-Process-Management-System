@@ -17,11 +17,11 @@ const handleRequest = async (apiCall) => {
 };
 
 const startProcess = async (payload) => {
-  return handleRequest(() => axios.get(`${API_BASE_URL}/processes/start`, payload));
+  return handleRequest(() => axios.post(`${API_BASE_URL}/processes/start`, payload));
 };
 
 const endProcess = async (payload) => {
-  return handleRequest(() => axios.get(`${API_BASE_URL}/processes/end`, payload));
+  return handleRequest(() => axios.post(`${API_BASE_URL}/processes/end`, payload));
 };
 
 const requiredMaterial = async (processName, customerName) => {

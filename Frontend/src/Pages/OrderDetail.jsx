@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Card, Button, Row, Col, Table, Spin, Alert, message, Tabs } from "antd";
 import { CheckCircleOutlined, FilePdfOutlined, PlayCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import useOrderDetails from "../hooks/useOrderDetailss";
-import { processLogColumns, processColumns, processIOColumns, inventoryColumns } from "../Components/Columns/ProcessColumns";
+import { processLogColumns, processColumns, processIOColumns, inventoryColumns, lotColumns } from "../Components/Columns/ProcessColumns";
 import StepsComponent from "../Components/OrderDetails/Steps";
 import ReceiveItemModal from "../Components/Modals/ReceiveItemModal";
 import Header from "../Components/OrderDetails/Header";
@@ -33,7 +33,10 @@ const OrderDetailsLayout = () => {
     processInputs,
     processOutputs,
     fetchProcessInputs,
-    fetchProcessOutputs
+    fetchProcessOutputs,
+
+    fetchLotsOrderId,
+    lots
   } = useOrderDetails(orderId);
 
   const [processes, setProcesses] = useState([]);
@@ -81,7 +84,7 @@ const OrderDetailsLayout = () => {
 
 
     const selectedInputMaterial = matchingFactoryProcess?.inputs || null;
-    
+
     setSelectedInputMaterial(selectedInputMaterial)
   };
 
@@ -94,6 +97,7 @@ const OrderDetailsLayout = () => {
     fetchProcessInputs();
     fetchProcessOutputs();
     fetchOrderById(orderId);
+    fetchLotsOrderId();
   }
 
   const handleStartProcessSuccess = () => {
@@ -173,7 +177,7 @@ const OrderDetailsLayout = () => {
             {/* Захиалгын дэлгэрэнгүй */}
             <Col xs={24} md={16}>
 
-              <OrderInfo orderDetails={orderDetails}/>
+              <OrderInfo orderDetails={orderDetails} />
 
               <InputOutputCard
                 title="Гаралтын процесс лог"
@@ -218,6 +222,21 @@ const OrderDetailsLayout = () => {
                 <Table
                   columns={processColumns}
                   dataSource={processes}
+                  pagination={false}
+                  bordered
+                  size="small"
+                  rowKey="id"
+                />
+              </Card>
+
+              <Card
+                title="Лот мэдээлэл"
+                style={{ marginBottom: "20px" }}
+                bodyStyle={{ padding: "15px" }}
+              >
+                <Table
+                  columns={lotColumns}
+                  dataSource={lots}
                   pagination={false}
                   bordered
                   size="small"

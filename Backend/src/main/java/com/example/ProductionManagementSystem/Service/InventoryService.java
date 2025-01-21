@@ -78,41 +78,11 @@ public class InventoryService {
         return inventoryRepository.save(inventory);
     }
 
-//    InventoryLog log = new InventoryLog();
-//        log.setInventoryId(inventory.getId());
-//        log.setAction("DEDUCT");
-//        log.setCustomerName(customerName);
-//        log.setFiberMaterial(inventory.getFiberMaterial());
-//        log.setFiberColor(inventory.getFiberColor());
-//        log.setFiberType(inventory.getFiberType());
-//        log.setRoughWeight(inventory.getRoughWeight());
-//        log.setBaleWeight(inventory.getBaleWeight());
-//        log.setBobbinWeight(inventory.getBobbinWeight());
-//        log.setBobbinNum(inventory.getBobbinNum());
-//        log.setBaleNum(inventory.getBaleNum());
-//        log.setConWeight(inventory.getConWeight());
-//        log.setTimestamp(LocalDateTime.now());
-//        inventoryLogRepository.save(log);
-//
-//        return inventory;
-//}
-
 public Inventory getInventoryById(Integer id) {
     return inventoryRepository.findById(id).orElse(null);
 }
 
 public List<Inventory> searchItems(String customerName, String fiberMaterial) throws ServiceException {
-//    List<Inventory> results;
-//
-//    if ((customerName == null || customerName.isEmpty()) && fiberMaterial.isEmpty()) {
-//        results = inventoryRepository.findAll();
-//    } else if (customerName != null && !customerName.isEmpty() && fiberMaterial.isEmpty()) {
-//        results =  inventoryRepository.findByCustomerNameContaining(customerName);
-//    } else if (customerName == null || customerName.isEmpty()) {
-//        results =  inventoryRepository.findByFiberMaterialContaining(fiberMaterial);
-//    } else {
-//        results =  inventoryRepository.findByCustomerNameContainingAndFiberMaterialContaining(customerName, fiberMaterial);
-//    }
     List<Inventory> results = inventoryRepository.searchInventory(
             customerName == null || customerName.trim().isEmpty() ? null : customerName,
             fiberMaterial == null || fiberMaterial.trim().isEmpty() ? null : fiberMaterial
@@ -230,24 +200,7 @@ public List<Inventory> searchItems(String customerName, String fiberMaterial) th
 
 
 public List<Inventory> getFilteredInventory(String customerName, String processType) {
-//    switch (processType) {
-//        case "Будах":
-//            return inventoryRepository.findByCustomerNameAndFiberMaterialIn(customerName, Arrays.asList("Түүхий эд"));
-//        case "Холих":
-//            return inventoryRepository.findByCustomerNameAndFiberMaterialIn(customerName, Arrays.asList("Түүхий эд", "Цувимал"));
-//        case "Цувих":
-//            return inventoryRepository.findByCustomerNameAndFiberMaterialIn(customerName, Arrays.asList("Хольсон түүхий эд", "Цувимал"));
-//        case "Ээрэх":
-//            return inventoryRepository.findByCustomerNameAndFiberMaterialIn(customerName, Arrays.asList("Цувимал"));
-//        case "Ороох":
-//            return inventoryRepository.findByCustomerNameAndFiberMaterialIn(customerName, Arrays.asList("Дан утас"));
-//        case "Давхарлах":
-//            return inventoryRepository.findByCustomerNameAndFiberMaterialIn(customerName, Arrays.asList("Ороосон утас"));
-//        case "Мушгих":
-//            return inventoryRepository.findByCustomerNameAndFiberMaterialIn(customerName, Arrays.asList("Давхарласан утас"));
-//        default:
-//            return new ArrayList<>();
-//    }
+
     FactoryProcess factoryProcess = factoryProcessRepository.findByName(processType);
 
     if (factoryProcess == null || factoryProcess.getInputs() == null || factoryProcess.getInputs().isEmpty()) {

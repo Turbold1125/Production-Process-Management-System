@@ -1,5 +1,6 @@
 package com.example.ProductionManagementSystem.Model;
 
+import com.example.ProductionManagementSystem.Model.Const.Status;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,6 +16,9 @@ public class Lot {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private  Integer id;
 
+    @Column(name = "order_id", nullable = false)
+    private Integer orderId;
+
     @Column(name = "lot_name", nullable = false, unique = true)
     private String lotName;
 
@@ -24,6 +28,9 @@ public class Lot {
     @Column(name = "weight", nullable = false)
     private double lotWeight;
 
-    @Column(name = "process_name", nullable = false)
-    private String processName;
+    @Column(name = "material_name", nullable = false)
+    private String materialName;
 }
+
+
+

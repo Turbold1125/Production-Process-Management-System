@@ -28,20 +28,16 @@ const Login = () => {
       const response = await axios.post(`http://localhost:8080/api/auth/login`, userData);
       const { user, token } = response.data;
   
-      // Decode token to check expiration
       const { exp } = jwtDecode(token);
       if (Date.now() >= exp * 1000) {
         throw new Error("The token has already expired.");
       }
   
-      // Save user and token to localStorage
       localStorage.setItem("user", JSON.stringify(user));
       localStorage.setItem("token", token);
   
-      // Update current user in the context
       setCurrentUser(user);
   
-      // Navigate to home page
       navigate("/");
     } catch (error) {
       console.error("Login error:", error);

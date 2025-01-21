@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Modal, Table, Spin, message, Tag } from "antd";
+import { Modal, Table, Spin, message } from "antd";
 import { getOrderProcesses } from "../../routes";
 import { processDetailColumns } from "../Columns/ProcessColumns";
 

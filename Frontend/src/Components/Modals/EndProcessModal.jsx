@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { Modal, Select, Input, message, Typography } from "antd";
 import { UserContext } from "../../Context/userContext";
 import { processService } from "../../Services/process.service";
@@ -19,12 +19,49 @@ const EndProcessModal = ({
     const [wasteData, setWasteData] = useState({});
     const [wastes, setWastes] = useState([]);
 
+
+    // const initializeWasteData = () => {
+    //     const factoryProcess = orderDetails?.factoryProcesses?.find(
+    //         (fp) => fp.name === selectedProcess.processName
+    //     );
+
+    //     if (factoryProcess?.waste) {
+    //         const wasteList = factoryProcess.waste.split(", ").map((waste) => waste.trim());
+    //         setWastes(wasteList);
+
+    //         const initialWasteData = wasteList.reduce((acc, waste) => {
+    //             acc[waste] = 0; // Initialize all waste weights to 0
+    //             return acc;
+    //         }, {});
+
+    //         setWasteData(initialWasteData);
+    //     }
+    // };
+    
+    const initializeWasteData = useCallback(() => {
+        const factoryProcess = orderDetails?.factoryProcesses?.find(
+            (fp) => fp.name === selectedProcess.processName
+        );
+    
+        if (factoryProcess?.waste) {
+            const wasteList = factoryProcess.waste.split(", ").map((waste) => waste.trim());
+            setWastes(wasteList);
+    
+            const initialWasteData = wasteList.reduce((acc, waste) => {
+                acc[waste] = 0; // Initialize all waste weights to 0
+                return acc;
+            }, {});
+    
+            setWasteData(initialWasteData);
+        }
+    }, [orderDetails, selectedProcess]);
+    
     useEffect(() => {
         if (isModalVisible) {
             fetchFiberColors();
             initializeWasteData();
         }
-    }, [isModalVisible]);
+    }, [isModalVisible, initializeWasteData]);
 
     const fetchFiberColors = async () => {
         try {
@@ -34,24 +71,6 @@ const EndProcessModal = ({
             message.error("Өнгөний мэдээллийг авахад алдаа гарлаа.");
         }
     }
-
-    const initializeWasteData = () => {
-        const factoryProcess = orderDetails?.factoryProcesses?.find(
-            (fp) => fp.name === selectedProcess.processName
-        );
-
-        if (factoryProcess?.waste) {
-            const wasteList = factoryProcess.waste.split(", ").map((waste) => waste.trim());
-            setWastes(wasteList);
-
-            const initialWasteData = wasteList.reduce((acc, waste) => {
-                acc[waste] = 0; // Initialize all waste weights to 0
-                return acc;
-            }, {});
-
-            setWasteData(initialWasteData);
-        }
-    };
 
     const handleEndProcess = async () => {
         const messageKey = "endProcess";

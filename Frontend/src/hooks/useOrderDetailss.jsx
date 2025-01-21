@@ -10,6 +10,7 @@ const useOrderDetailss = (orderId) => {
   const [processLogs, setProcessLogs] = useState([]);
   const [processInputs, setProcessInputs] = useState([]);
   const [processOutputs, setProcessOutputs] = useState([]);
+  const [lots, setLots] = useState([]);
 
   const [error, setError] = useState(null);
 
@@ -59,6 +60,23 @@ const useOrderDetailss = (orderId) => {
       setLoading(false);
     }
   }, [orderId]);
+  
+  const fetchLotsOrderId = useCallback(async () => {
+    if (!orderId) return;
+    setLoading(true);
+    setError(null);
+    
+    try {
+      const response = await axios.get(`${API_BASE_URL}/lots/byOrderId`, {
+        params: { orderId },
+      });
+      setLots(response.data);
+    } catch (err) {
+      setError("Failed to fetch lots.");
+    } finally {
+      setLoading(false);
+    }
+  }, [orderId]);
 
   const fetchProcessInputs = useCallback(async () => {
     if (!orderId) return;
@@ -100,20 +118,26 @@ const useOrderDetailss = (orderId) => {
       fetchProcesses();
       fetchProcessLogs();
       fetchProcessInputs();
-      fetchProcessOutputs(); 
+      fetchProcessOutputs();
+      fetchLotsOrderId();
     }
-  }, [orderId, fetchOrderById, fetchProcesses, fetchProcessLogs, fetchProcessInputs, fetchProcessOutputs]);
+  }, [orderId, fetchOrderById, fetchProcesses, fetchProcessLogs, fetchProcessInputs, fetchProcessOutputs, fetchLotsOrderId]);
 
   return {
     orderDetails,
     processes,
     processLogs,
+    
+    lots,
+    
     loading,
     error,
     fetchOrderById,
     fetchProcesses,
     fetchProcessLogs,
-
+    
+    fetchLotsOrderId,
+    
     processInputs, // Return process inputs
     processOutputs, // Return process outputs
     fetchProcessInputs, // Return fetch function for process inputs

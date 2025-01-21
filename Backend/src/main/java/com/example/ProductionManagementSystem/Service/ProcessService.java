@@ -37,6 +37,7 @@
         private final UserService userService;
         private final InventoryService inventoryService;
         private final ProcessOutputService processOutputService;
+        private final LotService lotService;
     
         private final OrderService orderService;
     
@@ -110,8 +111,6 @@
     
             orderService.updateOrderStatus(request.getOrderId(), Status.IN_PROGRESS);
 
-
-    
             return process;
         }
     
@@ -163,6 +162,12 @@
                     }
                 }
             }
+
+            /*---------------------------------*/
+            if ("Холих".equals(process.getProcessName())) {
+                lotService.createOnlyBlending(process);
+            }
+
             boolean allCompleted = processOutputService.areAllProcessesCompleted(process.getOrderId());
             if (allCompleted) {
                 orderService.updateOrderStatus(process.getOrderId(), Status.COMPLETED);
@@ -189,15 +194,6 @@
                 log.setOutputMaterial(process.getOutputMaterial());
                 log.setOutputMaterialWeight(process.getOutputMaterialWeight());
                 log.setOutputMaterialColor(process.getOutputMaterialColor());
-    
-    //            List<ProcessOutput> wasteOutputs = processOutputRepository.findByProcessIdAndType(process.getId(), OutputType.WASTE);
-    //            if (!wasteOutputs.isEmpty()) {
-    //                String wasteSummary = wasteOutputs.stream()
-    //                        .map(waste -> waste.getMaterial() + ": " + waste.getWeight() + "кг")
-    //                        .reduce((w1, w2) -> w1 + ", " + w2)
-    //                        .orElse("No waste");
-    //                log.setWasteDetails(wasteSummary);
-    //            }
             }
     
             if (action.equals(Status.START.name())) {

@@ -123,22 +123,6 @@ public class OrderService {
 
 
     public void updateOrderStatus(Integer orderId, Status status) {
-//        List<Process> processes = processRepository.findByOrderId(orderId);
-//
-//        boolean allCompleted = processes.stream().allMatch(p -> p.getStatus() == ProcessStatus.COMPLETED);
-//        boolean anyInProgress = processes.stream().anyMatch(p -> p.getStatus() == ProcessStatus.IN_PROGRESS);
-//
-//        orderRepository.findById(orderId).ifPresent(order -> {
-//            if (allCompleted) {
-//                order.setStatus(Status.COMPLETED);
-//            } else if (anyInProgress) {
-//                order.setStatus(Status.IN_PROGRESS);
-//            } else {
-//                order.setStatus(Status.NEW);
-//            }
-//            orderRepository.save(order);
-//        });
-
         orderRepository.findById(orderId).ifPresent(order -> {
             if (!order.getStatus().equals(status)) {
                 order.setStatus(status);

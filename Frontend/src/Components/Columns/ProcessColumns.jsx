@@ -134,6 +134,48 @@ export const processColumns = [
   }
 ];
 
+export const lotColumns = [
+  {
+    title: 'ID',
+    dataIndex: 'id',
+    key: 'id',
+    align: "center",
+  },
+  {
+    title: 'Захиалгын дугаар',
+    dataIndex: 'orderId',
+    key: 'orderId',
+    align: "center",
+  },
+  {
+    title: 'Лотын нэр',
+    dataIndex: 'lotName',
+    key: 'lotName',
+    align: "center",
+  },
+  {
+    title: 'Материал',
+    dataIndex: 'materialName',
+    key: 'materialName',
+    align: "center",
+  },
+  {
+    title: 'Жин (кг)',
+    dataIndex: 'lotWeight',
+    key: 'lotWeight',
+    align: "center",
+  },
+  {
+    title: 'Огноо',
+    dataIndex: 'createdDate',
+    key: 'createdDate',
+    align: "center",
+    render: (dateTime) => (dateTime ? formatDate(dateTime) : "-"),
+    sorter: (a, b) => new Date(a.dateTime) - new Date(b.dateTime),
+    defaultSortOrder: 'descend',
+  },
+]
+
 export const processIOColumns = [
   {
     title: 'ID',

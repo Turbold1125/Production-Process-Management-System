@@ -1,8 +1,8 @@
 package com.example.ProductionManagementSystem.Api;
 
 import com.example.ProductionManagementSystem.Constants.ProcessStatus;
-import com.example.ProductionManagementSystem.DTOs.EndProcessRequest;
-import com.example.ProductionManagementSystem.DTOs.ProcessRequest;
+import com.example.ProductionManagementSystem.DTOs.Process.EndProcessRequest;
+import com.example.ProductionManagementSystem.DTOs.Process.ProcessRequest;
 import com.example.ProductionManagementSystem.Exception.ServiceException;
 import com.example.ProductionManagementSystem.Model.Inventory;
 import com.example.ProductionManagementSystem.Model.Process;

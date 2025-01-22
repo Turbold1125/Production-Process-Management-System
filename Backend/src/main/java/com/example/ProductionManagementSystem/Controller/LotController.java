@@ -30,4 +30,9 @@ public class LotController implements LotApi {
     public List<Lot> getLotsByOrderId(@RequestParam Integer orderId){
         return lotService.getLotsByOrderId(orderId);
     }
+
+    @GetMapping("/withBatches")
+    public List<Lot> getLotsWithBatches(@RequestParam Integer orderId) {
+        return lotService.getLotsWithBatches(orderId);
+    }
 }

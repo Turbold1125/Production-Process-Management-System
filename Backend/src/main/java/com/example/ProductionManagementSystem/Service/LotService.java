@@ -1,6 +1,7 @@
 package com.example.ProductionManagementSystem.Service;
 
 import com.example.ProductionManagementSystem.DTOs.LotRequest;
+import com.example.ProductionManagementSystem.Model.Batch;
 import com.example.ProductionManagementSystem.Model.Lot;
 import com.example.ProductionManagementSystem.Model.Process;
 import com.example.ProductionManagementSystem.Repo.BatchRepository;
@@ -33,25 +34,40 @@ public class LotService {
         lot.setLotName(lotName);
         lot.setMaterialName(request.getMaterialName());
         lot.setLotWeight(request.getLotWeight());
+        lot.setRemainingWeight(request.getLotWeight());
         lot.setCreatedDate(LocalDateTime.now());
         return lotRepository.save(lot);
     }
 
     public Lot createOnlyBlending(Process process) {
-        int nextLotNumber = lotRepository.findMaxLotNumberByOrderId(process.getOrderId()).orElse(0) + 1;
 
-        String lotName = String.format("LOT-%s-%02d", process.getOrderId(), nextLotNumber);
+        String lotName = String.format("LOT-%s-%02d", process.getOrderId(), generateNextLotNumber(process.getOrderId()));
 
         Lot lot = new Lot();
         lot.setOrderId(process.getOrderId());
         lot.setLotName(lotName);
         lot.setMaterialName(process.getInputMaterial());
         lot.setLotWeight(process.getInputMaterialWeight());
+        lot.setRemainingWeight(process.getInputMaterialWeight());
         lot.setCreatedDate(LocalDateTime.now());
         return lotRepository.save(lot);
+    }
+
+    private int generateNextLotNumber(Integer orderId) {
+        return lotRepository.findMaxLotNumberByOrderId(orderId).orElse(0) + 1;
     }
 
     public List<Lot> getLotsByOrderId(Integer orderId){
         return lotRepository.findByOrderId(orderId);
     }
+
+    public List<Lot> getLotsWithBatches(Integer orderId) {
+        List<Lot> lots = lotRepository.findByOrderId(orderId);
+        lots.forEach(lot -> {
+            List<Batch> batches = batchRepository.findByLotId(lot.getId());
+            lot.setBatches(batches);
+        });
+        return lots;
+    }
+
 }

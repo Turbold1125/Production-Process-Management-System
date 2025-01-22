@@ -1,10 +1,10 @@
     package com.example.ProductionManagementSystem.Service;
     
     import com.example.ProductionManagementSystem.Constants.ProcessStatus;
-    import com.example.ProductionManagementSystem.DTOs.EndProcessRequest;
-    import com.example.ProductionManagementSystem.DTOs.FiberRequest;
-    import com.example.ProductionManagementSystem.DTOs.ProcessRequest;
-    import com.example.ProductionManagementSystem.DTOs.WasteRequest;
+    import com.example.ProductionManagementSystem.DTOs.Process.EndProcessRequest;
+    import com.example.ProductionManagementSystem.DTOs.Process.FiberRequest;
+    import com.example.ProductionManagementSystem.DTOs.Process.ProcessRequest;
+    import com.example.ProductionManagementSystem.DTOs.Process.WasteRequest;
     import com.example.ProductionManagementSystem.Exception.ErrorResponse;
     import com.example.ProductionManagementSystem.Exception.ServiceException;
     import com.example.ProductionManagementSystem.Model.Const.FactoryProcess;
@@ -69,7 +69,7 @@
                 throw new ServiceException(ErrorResponse.NO_PROCESS);
             }
 
-            if (process.getStatus().name().equals(Status.IN_PROGRESS)) {
+            if (ProcessStatus.IN_PROGRESS.equals(process.getStatus())) {
                 throw new ServiceException(ErrorResponse.IN_PROGRESS);
             }
 
@@ -82,8 +82,6 @@
     
             for (FiberRequest fiber : request.getFibers()) {
                 Inventory inventory = inventoryService.validateAndDeductInventory(fiber.getInventoryId(), fiber.getInputMaterialWeight(), request.getCustomerName(), request.getProcessName());
-    
-    //            processOutputService.logProcessInput(process.getId(), request.getOrderId(), fiber, inventory, request.getCustomerName());
     
                 processOutputService.logProcessInput(process, fiber, inventory);
     
@@ -115,11 +113,11 @@
         }
     
         public Inventory endProcess(EndProcessRequest request) throws ServiceException {
-    
+
             if (request.getProcessId() == null) {
                 throw new ServiceException(ErrorResponse.NO_PROCESS);
             }
-    
+
             Process process = processRepository.findById(request.getProcessId())
                     .orElseThrow(() -> new RuntimeException("Process not found."));
 
@@ -128,26 +126,26 @@
             if (factoryProcess == null || factoryProcess.getOutputs() == null) {
                 throw new IllegalArgumentException("Output material not configured for this process.");
             }
-    
+
             User user = userService.getUserById(request.getUserId());
-    
+
             if(request.getOutputWeight() <= 0) {
                 throw new IllegalArgumentException("Output weight must be greater than 0.");
             }
-    
+
             process.setStatus(ProcessStatus.COMPLETED);
             process.setUserId(request.getUserId());
             process.setUsername(user.getUsername());
             process.setOutputMaterialWeight(request.getOutputWeight());
             process.setOutputMaterialColor(request.getOutputColor());
             processRepository.save(process);
-    
+
             logProcessAction(process, Status.COMPLETED.name(), request.getUserId(), user.getUsername());
-    
+
             Inventory outputInventory = inventoryService.createProcessedInventory(process.getOutputMaterial(), request.getOutputColor(), request.getOutputWeight(), process.getCustomerName(), request.getFiberType());
-    
+
             processOutputService.logPrimaryOutput(process, outputInventory, OutputType.PRIMARY);
-    
+
             if (request.getWastes() != null && !request.getWastes().isEmpty()) {
                 for (WasteRequest wasteRequest : request.getWastes()) {
                     if (wasteRequest.getWeight() > 0) {
@@ -157,7 +155,7 @@
                                 process.getCustomerName(),
                                 request.getOutputColor()
                         );
-    
+
                         processOutputService.logWasteOutput(process, wasteInventory, wasteRequest, OutputType.WASTE);
                     }
                 }
@@ -172,10 +170,10 @@
             if (allCompleted) {
                 orderService.updateOrderStatus(process.getOrderId(), Status.COMPLETED);
             }
-    
+
             return outputInventory;
         }
-    
+
         public void logProcessAction(Process process, String action, Integer userId, String username) {
             ProcessLog log = processLogRepository.findByOrderIdAndProcessName(process.getOrderId(), process.getProcessName())
                     .orElse(new ProcessLog());

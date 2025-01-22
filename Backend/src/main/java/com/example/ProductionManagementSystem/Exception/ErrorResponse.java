@@ -44,6 +44,7 @@ public class ErrorResponse {
     public static final ErrorResponse NO_INVENTORY_TO_DELIVER = new ErrorResponse(HttpStatus.BAD_REQUEST, "S032", "Хүлээлгэн өгөх түүхий эд олдсонгүй");
     public static final ErrorResponse NO_INVENTORY_SELECTED = new ErrorResponse(HttpStatus.BAD_REQUEST, "S033", "Хүлээлгэн өгөх түүхий эд сонгоогүй байна.");
     public static final ErrorResponse OUTPUT_MATERIAL_NOT_CONFIGURED = new ErrorResponse(HttpStatus.BAD_REQUEST, "S034", "Процессд гаралтын материал тохируулагдаагүй байна.");
+    public static final ErrorResponse BATCH_SIZE_EXCEEDS_REMAINING_WEIGHT  = new ErrorResponse(HttpStatus.BAD_REQUEST, "S035", "Багцын хэмжээ үлдэгдэл жингээс их байна. Үлдэгдэл жин: %s.");
 
     @JsonIgnore
     private HttpStatusCode status;
@@ -54,6 +55,13 @@ public class ErrorResponse {
         this.status = status;
         this.code = code;
         this.message = message;
+    }
+
+    public ErrorResponse withDynamicMessage(Object... args) {
+        return new ErrorResponse(
+                this.status,
+                this.code,
+                String.format(this.message, args));
     }
 
     @Override

@@ -15,18 +15,21 @@ public class Batch {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @Column(name = "lot_name", nullable = false)
+    private String lotName;
+
     @Column(name = "batch_name", nullable = false, unique = true)
     private String batchName;
+
+    @Column(name = "weight", nullable = false)
+    private double weight;
+
+    @Column(name = "lot_id", nullable = false)
+    private Integer lotId;
 
     @Column(name = "created_date", nullable = false)
     private LocalDateTime createdDate;
 
-    @Column(name = "lot_name", nullable = false)
-    private String lotName;
-
     @Column(name = "process_name", nullable = false)
     private String processName;
-
-    @Column(name = "weight", nullable = false)
-    private double weight;
 }

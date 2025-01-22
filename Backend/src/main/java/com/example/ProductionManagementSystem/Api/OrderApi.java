@@ -1,6 +1,6 @@
 package com.example.ProductionManagementSystem.Api;
 
-import com.example.ProductionManagementSystem.DTOs.OrderResponse;
+import com.example.ProductionManagementSystem.DTOs.Order.OrderResponse;
 import com.example.ProductionManagementSystem.Exception.ServiceException;
 import com.example.ProductionManagementSystem.Model.Order;
 import io.swagger.v3.oas.annotations.Operation;

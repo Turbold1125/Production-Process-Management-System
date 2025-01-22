@@ -1,8 +1,8 @@
 package com.example.ProductionManagementSystem.Service.Processes;
 
 import com.example.ProductionManagementSystem.Constants.ProcessStatus;
-import com.example.ProductionManagementSystem.DTOs.FiberRequest;
-import com.example.ProductionManagementSystem.DTOs.WasteRequest;
+import com.example.ProductionManagementSystem.DTOs.Process.FiberRequest;
+import com.example.ProductionManagementSystem.DTOs.Process.WasteRequest;
 import com.example.ProductionManagementSystem.Model.Const.OutputType;
 import com.example.ProductionManagementSystem.Model.Inventory;
 import com.example.ProductionManagementSystem.Model.Process;

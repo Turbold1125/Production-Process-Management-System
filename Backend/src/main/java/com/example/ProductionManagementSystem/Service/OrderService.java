@@ -1,7 +1,7 @@
 package com.example.ProductionManagementSystem.Service;
 
 import com.example.ProductionManagementSystem.Constants.ProcessStatus;
-import com.example.ProductionManagementSystem.DTOs.OrderResponse;
+import com.example.ProductionManagementSystem.DTOs.Order.OrderResponse;
 import com.example.ProductionManagementSystem.Exception.ErrorResponse;
 import com.example.ProductionManagementSystem.Exception.ServiceException;
 import com.example.ProductionManagementSystem.Model.Const.FactoryProcess;

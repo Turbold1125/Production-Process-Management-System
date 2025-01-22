@@ -1,4 +1,4 @@
-package com.example.ProductionManagementSystem.DTOs;
+package com.example.ProductionManagementSystem.DTOs.Process;
 
 import lombok.Data;
 

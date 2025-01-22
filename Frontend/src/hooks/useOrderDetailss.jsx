@@ -11,6 +11,7 @@ const useOrderDetailss = (orderId) => {
   const [processInputs, setProcessInputs] = useState([]);
   const [processOutputs, setProcessOutputs] = useState([]);
   const [lots, setLots] = useState([]);
+  const [batches, setBatches] = useState([]);
 
   const [error, setError] = useState(null);
 
@@ -61,13 +62,31 @@ const useOrderDetailss = (orderId) => {
     }
   }, [orderId]);
   
-  const fetchLotsOrderId = useCallback(async () => {
+  // const fetchLotsOrderId = useCallback(async () => {
+  //   if (!orderId) return;
+  //   setLoading(true);
+  //   setError(null);
+    
+  //   try {
+  //     const response = await axios.get(`${API_BASE_URL}/lots/byOrderId`, {
+  //       params: { orderId },
+  //     });
+  //     setLots(response.data);
+  //   } catch (err) {
+  //     setError("Failed to fetch lots.");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // }, [orderId]);
+  
+  
+    const fetchLotsOrderId = useCallback(async () => {
     if (!orderId) return;
     setLoading(true);
     setError(null);
     
     try {
-      const response = await axios.get(`${API_BASE_URL}/lots/byOrderId`, {
+      const response = await axios.get(`${API_BASE_URL}/lots/withBatches`, {
         params: { orderId },
       });
       setLots(response.data);
@@ -111,6 +130,25 @@ const useOrderDetailss = (orderId) => {
       setLoading(false);
     }
   }, [orderId]);
+  
+  // const fetchBatches = useCallback(async () => {
+  //   if (!orderId) return;
+  //   setLoading(true);
+  //   setError(null);
+
+  //   try {
+  //     const response = await axios.get(`${API_BASE_URL}/lots/withBatches`, {
+  //       params: { orderId },
+  //     });
+  //     setBatches(response.data);
+  //   } catch (err) {
+  //     setError("Failed to fetch process outputs.");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // }, [orderId]);
+  
+  
 
   useEffect(() => {
     if (orderId) {
@@ -120,6 +158,7 @@ const useOrderDetailss = (orderId) => {
       fetchProcessInputs();
       fetchProcessOutputs();
       fetchLotsOrderId();
+      // fetchBatches();
     }
   }, [orderId, fetchOrderById, fetchProcesses, fetchProcessLogs, fetchProcessInputs, fetchProcessOutputs, fetchLotsOrderId]);
 
@@ -129,6 +168,7 @@ const useOrderDetailss = (orderId) => {
     processLogs,
     
     lots,
+    // batches,
     
     loading,
     error,
@@ -137,6 +177,7 @@ const useOrderDetailss = (orderId) => {
     fetchProcessLogs,
     
     fetchLotsOrderId,
+    // fetchBatches,
     
     processInputs, // Return process inputs
     processOutputs, // Return process outputs

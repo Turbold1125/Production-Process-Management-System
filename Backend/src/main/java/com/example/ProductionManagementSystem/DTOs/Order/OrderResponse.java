@@ -1,4 +1,4 @@
-package com.example.ProductionManagementSystem.DTOs;
+package com.example.ProductionManagementSystem.DTOs.Order;
 
 import com.example.ProductionManagementSystem.Model.Const.FactoryProcess;
 import com.example.ProductionManagementSystem.Model.Order;

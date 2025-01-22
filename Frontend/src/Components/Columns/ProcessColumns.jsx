@@ -135,28 +135,34 @@ export const processColumns = [
 ];
 
 export const lotColumns = [
-  {
-    title: 'ID',
-    dataIndex: 'id',
-    key: 'id',
-    align: "center",
-  },
-  {
-    title: 'Захиалгын дугаар',
-    dataIndex: 'orderId',
-    key: 'orderId',
-    align: "center",
-  },
+  // {
+  //   title: 'ID',
+  //   dataIndex: 'id',
+  //   key: 'id',
+  //   align: "center",
+  // },
   {
     title: 'Лотын нэр',
     dataIndex: 'lotName',
     key: 'lotName',
     align: "center",
   },
+  // {
+  //   title: 'Захиалгын дугаар',
+  //   dataIndex: 'orderId',
+  //   key: 'orderId',
+  //   align: "center",
+  // },
   {
     title: 'Материал',
     dataIndex: 'materialName',
     key: 'materialName',
+    align: "center",
+  },
+  {
+    title: 'Үлдэгдэл жин',
+    dataIndex: 'remainingWeight',
+    key: 'remainingWeight',
     align: "center",
   },
   {
@@ -166,7 +172,7 @@ export const lotColumns = [
     align: "center",
   },
   {
-    title: 'Огноо',
+    title: 'Үүсгэсэн',
     dataIndex: 'createdDate',
     key: 'createdDate',
     align: "center",
@@ -175,6 +181,59 @@ export const lotColumns = [
     defaultSortOrder: 'descend',
   },
 ]
+
+export const batchColumns = [
+  {
+    title: "Багц ID",
+    dataIndex: "id",
+    key: "id",
+  },
+  {
+    title: "Багцын нэр",
+    dataIndex: "batchName",
+    key: "batchName",
+    render: (text) => (
+      <span title={text} style={{ color: "#1890ff", cursor: "pointer" }}>
+        {text}
+      </span>
+    ),
+  },
+  {
+    title: "Жин",
+    dataIndex: "weight",
+    key: "weight",
+    render: (weight) => (
+      <span style={{ fontWeight: "bold", color: weight < 50 ? "red" : "green" }}>
+        {weight} кг
+      </span>
+    ),
+  },
+  {
+    title: "Үүссэн огноо",
+    dataIndex: "createdDate",
+    key: "createdDate",
+    render: (date) => (
+      <span>
+        {new Date(date).toLocaleDateString()}{" "}
+        <span style={{ color: "#8c8c8c" }}>
+          {new Date(date).toLocaleTimeString()}
+        </span>
+      </span>
+    ),
+  },
+  {
+    title: "Процессийн нэр",
+    dataIndex: "processName",
+    key: "processName",
+    render: (processName) => (
+      <span>
+        <Tag color={processName === "Холих" ? "green" : "blue"}>
+          {processName}
+        </Tag>
+      </span>
+    ),
+  },
+];
 
 export const processIOColumns = [
   {
@@ -378,3 +437,4 @@ export const processDetailColumns = [
     render: (weight) => (weight ? `${weight} кг` : "-"),
   },
 ];
+

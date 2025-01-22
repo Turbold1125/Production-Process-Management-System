@@ -9,7 +9,7 @@ const StepsComponent = ({ processes, handleProcessClick }) => {
   return (
     <div className="w-full p-4 bg-white rounded-lg shadow-md">
       {/* Progress Bar */}
-      <div className="relative w-full h-2 bg-gray-300 rounded-full mb-6">
+      <div className="relative w-full h-2 bg-gray-300 rounded-full mb-8">
         <div
           className="absolute top-0 left-0 h-2 bg-gradient-to-r from-blue-500 to-green-500 rounded-full transition-all"
           style={{
@@ -20,8 +20,9 @@ const StepsComponent = ({ processes, handleProcessClick }) => {
       </div>
 
       {/* Steps */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between relative">
         {processes.map((process, index) => (
+        
           <div
             key={index}
             className="relative flex flex-col items-center text-center cursor-pointer group"
@@ -68,7 +69,7 @@ const StepsComponent = ({ processes, handleProcessClick }) => {
                     : "bg-gray-300"
                 }`}
                 style={{
-                  width: "100px", // Adjust spacing between steps
+                  width: "100%", // Adjust spacing between steps
                 }}
               ></div>
             )}

@@ -1,4 +1,4 @@
-package com.example.ProductionManagementSystem.DTOs;
+package com.example.ProductionManagementSystem.DTOs.Process;
 
 import lombok.Data;
 
@@ -7,4 +7,5 @@ public class FiberRequest {
     private Integer inventoryId;
     private String inputMaterial;
     private Double inputMaterialWeight;
+    private String processName;
 }
